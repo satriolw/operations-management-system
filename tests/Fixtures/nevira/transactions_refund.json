@@ -1,0 +1,31 @@
+{
+  "current_page": 1,
+  "per_page": 50,
+  "last_page": 1,
+  "total": 1,
+  "next_page_url": null,
+  "data": [
+    {
+      "id_transaction": 8200,
+      "transaction_number": "INV/120/2026/06/8200",
+      "status": "REFUND",
+      "grand_total": 582560,
+      "payment_status": "PAID",
+      "created_at": "2026-06-09 14:20:00",
+      "request_refund_void_date": "2026-06-12 08:00:00",
+      "approve_refund_void_date": "2026-06-12 08:30:00",
+      "void_notes": null,
+      "refund_notes": "customer minta refund penuh",
+      "refund_void_by": 200,
+      "refund_void_approved_by": 3,
+      "id_cashier": 205,
+      "id_outlet": 120,
+      "outlet_name": "Fatmawati",
+      "progress_percentage": 0,
+      "cashier": { "id_user": 205, "id_role": 37 },
+      "services": [
+        { "id_service": 9, "created_at": "2026-06-09T07:20:00.000000Z" }
+      ]
+    }
+  ]
+}
