@@ -1,0 +1,53 @@
+{
+  "current_page": 1,
+  "per_page": 50,
+  "last_page": 2,
+  "total": 3,
+  "next_page_url": "https://api.nevira.id/api/transactions?status=VOID&is_void_refund=true&id_outlet=120&start_date=2026-06-05&end_date=2026-06-12&per_page=50&page=2",
+  "data": [
+    {
+      "id_transaction": 8134,
+      "transaction_number": "INV/120/2026/06/8134",
+      "status": "VOID",
+      "grand_total": 81225,
+      "payment_status": "UNPAID",
+      "created_at": "2026-06-11 13:10:12",
+      "request_refund_void_date": "2026-06-12 11:58:01",
+      "approve_refund_void_date": "2026-06-12 13:56:40",
+      "void_notes": "salah input nota",
+      "refund_notes": null,
+      "refund_void_by": 181,
+      "refund_void_approved_by": 181,
+      "id_cashier": 181,
+      "id_outlet": 120,
+      "outlet_name": "Fatmawati",
+      "progress_percentage": 0,
+      "cashier": { "id_user": 181, "id_role": 37 },
+      "services": [
+        { "id_service": 1, "created_at": "2026-06-11T06:10:12.000000Z" }
+      ]
+    },
+    {
+      "id_transaction": 7971,
+      "transaction_number": "INV/120/2026/06/7971",
+      "status": "VOID",
+      "grand_total": 45000,
+      "payment_status": "UNPAID",
+      "created_at": "2026-06-12 09:02:00",
+      "request_refund_void_date": "2026-06-12 09:05:00",
+      "approve_refund_void_date": "2026-06-12 09:06:10",
+      "void_notes": "double input",
+      "refund_notes": null,
+      "refund_void_by": 180,
+      "refund_void_approved_by": 3,
+      "id_cashier": 180,
+      "id_outlet": 120,
+      "outlet_name": "Fatmawati",
+      "progress_percentage": 0,
+      "cashier": { "id_user": 180, "id_role": 37 },
+      "services": [
+        { "id_service": 2, "created_at": "2026-06-12T02:02:00.000000Z" }
+      ]
+    }
+  ]
+}

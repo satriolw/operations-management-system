@@ -1,0 +1,33 @@
+{
+  "current_page": 1,
+  "per_page": 50,
+  "last_page": 1,
+  "total": 2,
+  "next_page_url": null,
+  "data": [
+    {
+      "id_transaction": 9001,
+      "transaction_number": "INV/117/2026/06/9001",
+      "status": "COMPLETED",
+      "grand_total": 1500000,
+      "payment_status": "UNPAID",
+      "created_at": "2026-06-12 10:15:00",
+      "id_cashier": 312,
+      "id_outlet": 117,
+      "outlet_name": "Kemang",
+      "progress_percentage": 100
+    },
+    {
+      "id_transaction": 9002,
+      "transaction_number": "INV/117/2026/06/9002",
+      "status": "COMPLETED",
+      "grand_total": 750000,
+      "payment_status": "UNPAID",
+      "created_at": "2026-06-12 16:40:00",
+      "id_cashier": 312,
+      "id_outlet": 117,
+      "outlet_name": "Kemang",
+      "progress_percentage": 100
+    }
+  ]
+}
