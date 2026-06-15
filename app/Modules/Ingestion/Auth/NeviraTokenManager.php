@@ -4,6 +4,7 @@ namespace App\Modules\Ingestion\Auth;
 
 use App\Modules\Ingestion\Contracts\AccessTokenProvider;
 use App\Modules\Ingestion\Exceptions\NeviraAuthException;
+use App\Support\Observability\Metrics;
 use Illuminate\Contracts\Cache\Repository as CacheRepository;
 use Illuminate\Http\Client\Factory as HttpFactory;
 use Illuminate\Support\Facades\Cache;
@@ -71,6 +72,7 @@ final class NeviraTokenManager implements AccessTokenProvider
             if ($this->isFresh($entry) && ($staleToken === null || $entry['token'] !== $staleToken)) {
                 return $entry['token'];
             }
+            Metrics::increment(Metrics::NEVIRA_REAUTH_FAILURES);
             Log::error('NEVIRA re-auth: gagal memperoleh login lock (single-flight).', [
                 'cache_key' => $this->key(),
             ]);
@@ -86,6 +88,7 @@ final class NeviraTokenManager implements AccessTokenProvider
 
         if ($username === '' || $password === '') {
             // Alert TANPA membocorkan apa pun.
+            Metrics::increment(Metrics::NEVIRA_REAUTH_FAILURES);
             Log::error('NEVIRA re-auth gagal: service credential belum dikonfigurasi.');
             throw new NeviraAuthException('Service credential NEVIRA belum dikonfigurasi (secret store).');
         }
@@ -101,6 +104,7 @@ final class NeviraTokenManager implements AccessTokenProvider
 
         if ($response->failed()) {
             // Alert: log status SAJA, tidak ada credential/token.
+            Metrics::increment(Metrics::NEVIRA_REAUTH_FAILURES);
             Log::error('NEVIRA re-auth gagal: login endpoint menolak.', [
                 'status' => $response->status(),
                 'login_path' => config('nevira.login_path'),
@@ -114,6 +118,7 @@ final class NeviraTokenManager implements AccessTokenProvider
             ?? data_get($body, 'data.token');
 
         if (! is_string($token) || $token === '') {
+            Metrics::increment(Metrics::NEVIRA_REAUTH_FAILURES);
             Log::error('NEVIRA re-auth gagal: response login tanpa token.', [
                 'login_path' => config('nevira.login_path'),
             ]);

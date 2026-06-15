@@ -8,6 +8,7 @@ use App\Modules\Ingestion\DTO\DashboardDTO;
 use App\Modules\Ingestion\DTO\DateRange;
 use App\Modules\Ingestion\Exceptions\NeviraAuthException;
 use App\Modules\Ingestion\Exceptions\NeviraRequestException;
+use App\Support\Observability\Metrics;
 use Carbon\CarbonInterface;
 use Illuminate\Http\Client\Factory as HttpFactory;
 use Illuminate\Http\Client\Response;
@@ -123,6 +124,7 @@ final class NeviraApiSource implements TransactionSource
 
         while (true) {
             $token = $this->tokens->token();
+            Metrics::increment(Metrics::NEVIRA_CALLS);
             $response = $this->http
                 ->baseUrl((string) config('nevira.base_url'))
                 ->withToken($token)

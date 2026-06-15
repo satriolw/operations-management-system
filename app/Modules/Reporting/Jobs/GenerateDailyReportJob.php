@@ -3,6 +3,8 @@
 namespace App\Modules\Reporting\Jobs;
 
 use App\Models\ReportRun;
+use App\Support\Observability\JobTelemetry;
+use App\Support\Observability\Metrics;
 use App\Support\Time\Wib;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -47,20 +49,26 @@ class GenerateDailyReportJob implements ShouldQueue
     {
         $date = $this->reportDate ?? Wib::normalize(now())->format('Y-m-d');
 
-        // Idempotency: kunci (outlet, report_date). firstOrCreate + unique index → satu baris.
-        $run = DB::transaction(function () use ($date) {
-            return ReportRun::query()->firstOrCreate(
-                ['id_outlet' => $this->idOutlet, 'report_date' => $date],
-                ['status' => 'pending'],
-            );
+        JobTelemetry::run('reporting.generate', [
+            'id_outlet' => $this->idOutlet,
+            'report_date' => $date,
+        ], function () use ($date) {
+            // Idempotency: kunci (outlet, report_date). firstOrCreate + unique index → satu baris.
+            $run = DB::transaction(function () use ($date) {
+                return ReportRun::query()->firstOrCreate(
+                    ['id_outlet' => $this->idOutlet, 'report_date' => $date],
+                    ['status' => 'pending'],
+                );
+            });
+
+            // Sudah diproses (bukan baru & bukan pending) → idempotent skip, tanpa efek ganda.
+            if (! $run->wasRecentlyCreated && $run->status !== 'pending') {
+                return;
+            }
+
+            // --- STUB generasi (OPS-201/206 mengisi angka & render sebenarnya) ---
+            $run->update(['status' => 'generated']);
+            Metrics::increment(Metrics::REPORTS_GENERATED);
         });
-
-        // Sudah pernah diproses (bukan baru dibuat & bukan pending) → idempotent skip, tanpa efek ganda.
-        if (! $run->wasRecentlyCreated && $run->status !== 'pending') {
-            return;
-        }
-
-        // --- STUB generasi (OPS-201/206 mengisi angka & render sebenarnya) ---
-        $run->update(['status' => 'generated']);
     }
 }

@@ -50,6 +50,9 @@ beforeEach(function () {
     config([
         'nevira.base_url' => 'https://api.nevira.id',
         'nevira.token' => 'secret-token-xyz',
+        // paksa ConfigTokenProvider (deterministik, tak bergantung service creds di .env)
+        'nevira.service_username' => null,
+        'nevira.service_password' => null,
         'nevira.per_page' => 50,
         'nevira.retry.times' => 3,
     ]);
