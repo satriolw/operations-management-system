@@ -9,7 +9,9 @@ uses(RefreshDatabase::class);
 
 function scheduledEvents(): \Illuminate\Support\Collection
 {
-    $schedule = app(Schedule::class);
+    // Schedule terisolasi (bukan singleton app) agar entri boot-time lain (mis. retensi OPS-705)
+    // tidak mengotori asersi jumlah event.
+    $schedule = new Schedule();
     DailyReportScheduler::apply($schedule);
 
     return collect($schedule->events());
