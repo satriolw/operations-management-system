@@ -12,6 +12,20 @@ return [
     'service_username' => env('NEVIRA_SERVICE_USERNAME'),
     'service_password' => env('NEVIRA_SERVICE_PASSWORD'),
 
+    // --- Token lifecycle login 24 jam (OPS-108) ---
+    'login_path' => env('NEVIRA_LOGIN_PATH', '/api/login'),
+    'auth' => [
+        'cache_key' => env('NEVIRA_TOKEN_CACHE_KEY', 'nevira:access_token'),
+        // null = pakai cache default (Redis di prod, array saat test). Shared antar worker.
+        'cache_store' => env('NEVIRA_TOKEN_CACHE_STORE'),
+        'lifetime_hours' => (int) env('NEVIRA_TOKEN_LIFETIME_HOURS', 24),
+        // refresh proaktif bila umur token mendekati 24 jam
+        'refresh_after_hours' => (int) env('NEVIRA_TOKEN_REFRESH_AFTER_HOURS', 23),
+        // single-flight lock: berapa lama lock dipegang & berapa lama worker lain menunggu
+        'lock_seconds' => (int) env('NEVIRA_LOGIN_LOCK_SECONDS', 15),
+        'lock_wait_seconds' => (int) env('NEVIRA_LOGIN_LOCK_WAIT_SECONDS', 15),
+    ],
+
     'timeout' => (int) env('NEVIRA_TIMEOUT', 30),
 
     'per_page' => (int) env('NEVIRA_PER_PAGE', 50),

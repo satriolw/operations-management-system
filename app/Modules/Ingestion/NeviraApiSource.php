@@ -118,34 +118,50 @@ final class NeviraApiSource implements TransactionSource
     {
         $maxTries = max(1, (int) config('nevira.retry.times', 3));
         $backoff = (array) config('nevira.retry.backoff_ms', [1000, 3000, 9000]);
-        $attempt = 0;
+        $transientAttempt = 0;
+        $reauthDone = false;
 
         while (true) {
-            $attempt++;
+            $token = $this->tokens->token();
             $response = $this->http
                 ->baseUrl((string) config('nevira.base_url'))
-                ->withToken($this->tokens->token())
+                ->withToken($token)
                 ->acceptJson()
                 ->timeout((int) config('nevira.timeout', 30))
                 ->get($path, $query);
 
-            // 401/403 — BUKAN transient. Minta provider lupakan token (seam OPS-108) lalu lempar.
-            if (in_array($response->status(), [401, 403], true)) {
+            $status = $response->status();
+
+            // 401 — token mungkin kedaluwarsa. Reaktif: single-flight re-login lalu retry SEKALI.
+            // 401/403 BUKAN error transient → tidak masuk jalur backoff 429/5xx.
+            if ($status === 401 && ! $reauthDone) {
+                $this->tokens->refresh($token); // single-flight; melempar NeviraAuthException bila gagal (no loop)
+                $reauthDone = true;
+
+                continue; // retry request asli sekali dgn token baru
+            }
+
+            if ($status === 401 || $status === 403) {
+                // Sudah re-auth tapi tetap 401, atau 403 (forbidden) → berhenti, bukan loop.
                 $this->tokens->forgetToken();
                 throw new NeviraAuthException(
-                    "NEVIRA auth gagal (HTTP {$response->status()}) pada {$path}."
+                    "NEVIRA auth gagal (HTTP {$status}) pada {$path}".($reauthDone ? ' setelah re-login.' : '.')
                 );
             }
 
             // 429 / 5xx — transient. Backoff lalu retry sampai jatah habis.
-            if (($response->status() === 429 || $response->serverError()) && $attempt < $maxTries) {
-                Sleep::for($this->backoffMs($response, $backoff, $attempt))->milliseconds();
-                continue;
+            if ($status === 429 || $response->serverError()) {
+                $transientAttempt++;
+                if ($transientAttempt < $maxTries) {
+                    Sleep::for($this->backoffMs($response, $backoff, $transientAttempt))->milliseconds();
+
+                    continue;
+                }
             }
 
             if ($response->failed()) {
                 throw new NeviraRequestException(
-                    "NEVIRA request gagal (HTTP {$response->status()}) pada {$path} setelah {$attempt} percobaan."
+                    "NEVIRA request gagal (HTTP {$status}) pada {$path}."
                 );
             }
 
