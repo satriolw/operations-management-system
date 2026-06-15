@@ -11,9 +11,14 @@ Artisan::command('inspire', function () {
 })->purpose('Display an inspiring quote');
 
 // Penjadwalan laporan harian per outlet (OPS-104), timezone Asia/Jakarta.
-// Guard: tabel outlets harus ada (mis. sebelum migrate pertama / saat build artifact).
-if (Schema::hasTable('outlets')) {
-    DailyReportScheduler::apply(app(\Illuminate\Console\Scheduling\Schedule::class));
+// Guard: tabel outlets harus ada. DB bisa belum siap/tak terjangkau (sebelum migrate,
+// build artifact, atau saat menjalankan artisan tanpa DB) → jangan menggagalkan console kernel.
+try {
+    if (Schema::hasTable('outlets')) {
+        DailyReportScheduler::apply(app(\Illuminate\Console\Scheduling\Schedule::class));
+    }
+} catch (\Throwable $e) {
+    // DB belum tersedia → lewati registrasi jadwal dinamis (mis. saat migrate pertama).
 }
 
 // Retensi payload mentah (OPS-705) — harian dini hari WIB.

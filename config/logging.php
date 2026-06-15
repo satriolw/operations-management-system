@@ -65,6 +65,16 @@ return [
             'replace_placeholders' => true,
         ],
 
+        // OPS-701 · log terstruktur job (JSON) — id_outlet, report_date, durasi, hasil.
+        'oms' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/oms.log'),
+            'level' => env('LOG_LEVEL', 'debug'),
+            'days' => env('OMS_LOG_DAYS', 30),
+            'formatter' => Monolog\Formatter\JsonFormatter::class,
+            'replace_placeholders' => true,
+        ],
+
         'daily' => [
             'driver' => 'daily',
             'path' => storage_path('logs/laravel.log'),
