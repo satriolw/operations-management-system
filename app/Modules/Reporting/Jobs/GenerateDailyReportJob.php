@@ -2,6 +2,7 @@
 
 namespace App\Modules\Reporting\Jobs;
 
+use App\Models\Outlet;
 use App\Models\ReportRun;
 use App\Support\Observability\JobTelemetry;
 use App\Support\Observability\Metrics;
@@ -13,6 +14,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\Middleware\WithoutOverlapping;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Generate laporan harian satu outlet (OPS-104 — STUB; agregasi/render nyata = OPS-201/206).
@@ -53,6 +55,19 @@ class GenerateDailyReportJob implements ShouldQueue
             'id_outlet' => $this->idOutlet,
             'report_date' => $date,
         ], function () use ($date) {
+            // OPS-105: laporan hanya jalan untuk outlet AKTIF & terdaftar. Scheduler sudah
+            // memfilter, tapi job bisa dipanggil langsung (replay/backfill) → guard di sini.
+            $outlet = Outlet::find($this->idOutlet);
+            if ($outlet === null || ! $outlet->active) {
+                Log::channel('oms')->warning('reporting.skipped_inactive_outlet', [
+                    'id_outlet' => $this->idOutlet,
+                    'report_date' => $date,
+                    'reason' => $outlet === null ? 'not_found' : 'inactive',
+                ]);
+
+                return; // tanpa membuat report_run / efek apa pun
+            }
+
             // Idempotency: kunci (outlet, report_date). firstOrCreate + unique index → satu baris.
             $run = DB::transaction(function () use ($date) {
                 return ReportRun::query()->firstOrCreate(
