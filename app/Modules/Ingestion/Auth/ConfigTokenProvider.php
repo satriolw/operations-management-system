@@ -22,8 +22,14 @@ final class ConfigTokenProvider implements AccessTokenProvider
         return $token;
     }
 
+    public function refresh(?string $staleToken = null): string
+    {
+        // Token statis tak bisa di-login ulang → 401 = kegagalan auth tegas (bukan loop).
+        throw new NeviraAuthException('Token NEVIRA statis ditolak (401/403); tidak ada jalur re-login. Konfigurasi service credential (OPS-108).');
+    }
+
     public function forgetToken(): void
     {
-        // Token statis tak bisa di-refresh sendiri; OPS-108 mengganti perilaku ini.
+        // Token statis tak bisa di-refresh sendiri; NeviraTokenManager (OPS-108) yang melakukannya.
     }
 }

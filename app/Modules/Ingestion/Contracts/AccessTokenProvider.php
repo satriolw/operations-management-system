@@ -9,8 +9,16 @@ namespace App\Modules\Ingestion\Contracts;
  */
 interface AccessTokenProvider
 {
+    /** Token saat ini (login proaktif bila kosong/mendekati kedaluwarsa). */
     public function token(): string;
 
-    /** Dipanggil saat 401 agar provider me-refresh token (no-op untuk token statis). */
+    /**
+     * Re-login reaktif (dipanggil saat 401). Single-flight: bila worker lain sudah
+     * me-refresh (token cache != $staleToken yang menyebabkan 401), pakai token baru itu
+     * tanpa login ulang. Mengembalikan token yang berlaku.
+     */
+    public function refresh(?string $staleToken = null): string;
+
+    /** Buang token cache agar token() berikutnya login ulang. */
     public function forgetToken(): void;
 }
