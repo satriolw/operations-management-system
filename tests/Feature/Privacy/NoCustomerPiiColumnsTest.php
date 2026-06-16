@@ -26,7 +26,7 @@ it('tidak ada kolom PII customer di tabel output mana pun', function () {
 
     foreach ($tables as $table) {
         foreach (Schema::getColumnListing($table) as $column) {
-            expect(PiiPolicy::isForbiddenColumn($column))
+            expect(PiiPolicy::isForbiddenColumn($column, $table))
                 ->toBeFalse("Tabel output '{$table}' punya kolom PII customer terlarang: '{$column}'");
         }
     }

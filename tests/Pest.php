@@ -44,7 +44,9 @@ expect()->extend('toBeOne', function () {
 |
 */
 
-function something()
+/** Helper bersama: user admin (punya semua permission OPS-801) untuk uji Admin. */
+function admin(): \App\Models\User
 {
-    // ..
+    return tap(\App\Models\User::factory()->create())
+        ->assignRole(\App\Modules\Identity\Permissions::ROLE_ADMIN);
 }

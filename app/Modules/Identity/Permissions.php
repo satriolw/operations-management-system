@@ -32,6 +32,27 @@ final class Permissions
     }
 
     /**
+     * Scope outlet per role (OPS-802/OPS-1003):
+     *  all = semua outlet (admin, tanpa assignment) · single = tepat 1 (head_store) · multi = ≥1.
+     *
+     * @return array<string, string>
+     */
+    public static function roleScopes(): array
+    {
+        return [
+            self::ROLE_ADMIN => 'all',
+            self::ROLE_HEAD_STORE => 'single',
+            self::ROLE_AREA_MANAGER => 'multi',
+            self::ROLE_OPS => 'multi',
+        ];
+    }
+
+    public static function scopeFor(string $role): string
+    {
+        return self::roleScopes()[$role] ?? 'multi';
+    }
+
+    /**
      * Peta role → permission (kebijakan default; dapat disesuaikan via Admin nanti).
      *
      * @return array<string, string[]>
