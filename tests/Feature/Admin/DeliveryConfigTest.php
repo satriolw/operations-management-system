@@ -11,11 +11,6 @@ uses(RefreshDatabase::class);
 
 beforeEach(fn () => $this->seed(\Database\Seeders\RolesAndPermissionsSeeder::class));
 
-function admin(): User
-{
-    return tap(User::factory()->create())->assignRole(Permissions::ROLE_ADMIN);
-}
-
 function targetWith(WhatsappAccount $acct, string $mode = 'hybrid'): DeliveryTarget
 {
     $outlet = Outlet::factory()->create();

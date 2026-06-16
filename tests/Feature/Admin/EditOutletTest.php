@@ -16,11 +16,6 @@ beforeEach(function () {
     ]);
 });
 
-function admin(): User
-{
-    return tap(User::factory()->create())->assignRole(Permissions::ROLE_ADMIN);
-}
-
 function validPayload(array $override = []): array
 {
     return array_merge([

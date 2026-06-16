@@ -13,11 +13,6 @@ beforeEach(function () {
     $this->cp = Outlet::factory()->create(['id_outlet' => 121, 'name' => 'Cipete']);
 });
 
-function admin(): User
-{
-    return tap(User::factory()->create())->assignRole(Permissions::ROLE_ADMIN);
-}
-
 it('menolak akses tanpa master_data.edit (403)', function () {
     $ops = tap(User::factory()->create())->assignRole(Permissions::ROLE_OPS);
     $this->actingAs($ops)->get(route('admin.users.index'))->assertForbidden();
