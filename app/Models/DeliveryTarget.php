@@ -17,7 +17,7 @@ class DeliveryTarget extends Model
     public const MODES = ['hybrid', 'assisted', 'full_auto'];
 
     protected $fillable = [
-        'id_outlet', 'investor_label', 'channel_type', 'whatsapp_account_id',
+        'id_outlet', 'investor_id', 'investor_label', 'channel_type', 'whatsapp_account_id',
         'group_id', 'group_ready', 'deliver_mode', 'template_label', 'active',
     ];
 
@@ -34,6 +34,11 @@ class DeliveryTarget extends Model
     public function whatsappAccount(): BelongsTo
     {
         return $this->belongsTo(WhatsappAccount::class);
+    }
+
+    public function investor(): BelongsTo
+    {
+        return $this->belongsTo(Investor::class);
     }
 
     public function modeRequiresOba(string $mode): bool
