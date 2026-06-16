@@ -2,16 +2,19 @@
 
 namespace App\Models;
 
+use App\Modules\Identity\Concerns\ScopedByOutlet;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * Satu run laporan harian per (id_outlet, report_date). unique(id_outlet, report_date)
- * menegakkan idempotency (OPS-101 schema).
+ * menegakkan idempotency (OPS-101 schema). Ber-id_outlet → ter-scope per outlet (OPS-1003).
  */
 class ReportRun extends Model
 {
+    use ScopedByOutlet;
+
     protected $fillable = [
         'id_outlet', 'report_date', 'status', 'payload_text', 'image_path',
         'total_sales', 'realized', 'receivable', 'txn_count',

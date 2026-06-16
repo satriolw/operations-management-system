@@ -47,4 +47,24 @@ class User extends Authenticatable
     {
         return $this->status === 'inactive';
     }
+
+    // --- Scoping per-outlet (OPS-1003) ---
+
+    /** Admin = akses semua outlet (tanpa assignment). */
+    public function canAccessAllOutlets(): bool
+    {
+        return $this->hasRole(\App\Modules\Identity\Permissions::ROLE_ADMIN);
+    }
+
+    /** @return array<int,int> id_outlet yang di-assign ke user ini. */
+    public function assignedOutletIds(): array
+    {
+        return $this->outlets()->pluck('outlets.id_outlet')->map(fn ($id) => (int) $id)->all();
+    }
+
+    /** Boleh akses data outlet tertentu? Admin → selalu; lainnya → hanya yang di-assign. */
+    public function canAccessOutlet(int $idOutlet): bool
+    {
+        return $this->canAccessAllOutlets() || in_array($idOutlet, $this->assignedOutletIds(), true);
+    }
 }
