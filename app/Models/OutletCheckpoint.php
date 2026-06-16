@@ -8,12 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 /** Titik cek outlet-diam (OPS-803). Dibaca OPS-502. */
 class OutletCheckpoint extends Model
 {
-    protected $fillable = ['id_outlet', 'checkpoint_hour', 'threshold_pct'];
-
-    protected $casts = [
-        'checkpoint_hour' => 'integer',
-        'threshold_pct' => 'integer',
-    ];
+    protected $fillable = ['id_outlet', 'check_time'];
 
     public function outlet(): BelongsTo
     {

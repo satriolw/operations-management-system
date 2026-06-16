@@ -19,10 +19,14 @@ class Outlet extends Model
 
     protected $keyType = 'int';
 
-    protected $fillable = ['id_outlet', 'name', 'report_time', 'timezone', 'active'];
+    protected $fillable = [
+        'id_outlet', 'name', 'report_time', 'timezone', 'active',
+        'silent_threshold_pct', 'comparison_basis',
+    ];
 
     protected $casts = [
         'active' => 'boolean',
+        'silent_threshold_pct' => 'integer',
     ];
 
     public function reportRuns(): HasMany

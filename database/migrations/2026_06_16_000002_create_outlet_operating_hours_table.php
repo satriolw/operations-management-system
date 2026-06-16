@@ -5,9 +5,9 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 /**
- * OPS-803/OPS-106 · jam operasional per outlet (WIB) sbg DAFTAR JENDELA per weekday
- * (dukung split-shift). Weekday tanpa jendela = tutup. Dipakai meredam false alarm
- * outlet-diam (OPS-501/502) & empty-state laporan (OPS-1001). Jendela tak boleh tumpang tindih.
+ * OPS-803/OPS-106 · jam operasional per outlet per weekday (WIB). Satu baris/hari dgn
+ * toggle tutup + jam buka/tutup (sesuai desain). Dipakai meredam false alarm outlet-diam
+ * (OPS-501/502) & empty-state laporan (OPS-1001).
  */
 return new class extends Migration
 {
@@ -17,11 +17,12 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('id_outlet');
             $table->unsignedTinyInteger('weekday'); // 0=Minggu .. 6=Sabtu
-            $table->time('open_time');
-            $table->time('close_time');
+            $table->boolean('is_closed')->default(false);
+            $table->time('open_time')->nullable();
+            $table->time('close_time')->nullable();
             $table->timestamps();
 
-            $table->index(['id_outlet', 'weekday']);
+            $table->unique(['id_outlet', 'weekday']);
             $table->foreign('id_outlet')->references('id_outlet')->on('outlets')->cascadeOnDelete();
         });
     }

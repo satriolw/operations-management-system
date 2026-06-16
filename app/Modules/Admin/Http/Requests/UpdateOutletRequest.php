@@ -11,6 +11,8 @@ use Illuminate\Validation\Validator;
  */
 class UpdateOutletRequest extends FormRequest
 {
+    private const MIN_GAP_MINUTES = 30;
+
     public function authorize(): bool
     {
         // OPS-801 gate aksi sensitif. (Scoping per-outlet utk Area Manager = OPS-1003, menyusul.)
@@ -22,15 +24,17 @@ class UpdateOutletRequest extends FormRequest
         return [
             'active' => ['required', 'boolean'],
             'report_time' => ['required', 'date_format:H:i'],
+            'silent_threshold_pct' => ['required', 'integer', 'between:0,100'],
+            'comparison_basis' => ['required', 'in:avg_14d,avg_30d,same_dow'],
 
             'checkpoints' => ['array'],
-            'checkpoints.*.hour' => ['required', 'integer', 'between:0,23'],
-            'checkpoints.*.threshold' => ['required', 'integer', 'between:0,100'],
+            'checkpoints.*.time' => ['required', 'date_format:H:i'],
 
             'operating_hours' => ['array'],
             'operating_hours.*.weekday' => ['required', 'integer', 'between:0,6'],
-            'operating_hours.*.open' => ['required', 'date_format:H:i'],
-            'operating_hours.*.close' => ['required', 'date_format:H:i'],
+            'operating_hours.*.is_closed' => ['nullable', 'boolean'],
+            'operating_hours.*.open' => ['nullable', 'required_if:operating_hours.*.is_closed,0,false', 'date_format:H:i'],
+            'operating_hours.*.close' => ['nullable', 'required_if:operating_hours.*.is_closed,0,false', 'date_format:H:i'],
 
             'holidays' => ['array'],
             'holidays.*.date' => ['required', 'date_format:Y-m-d'],
@@ -41,40 +45,49 @@ class UpdateOutletRequest extends FormRequest
     public function withValidator(Validator $validator): void
     {
         $validator->after(function (Validator $v) {
-            $this->validateCheckpointsUnique($v);
+            $this->validateCheckTimeGaps($v);
             $this->validateOperatingHours($v);
         });
     }
 
-    private function validateCheckpointsUnique(Validator $v): void
+    /** Jam cek wajib unik & berjarak >= 30 menit (state "jam tumpang tindih"). */
+    private function validateCheckTimeGaps(Validator $v): void
     {
-        $hours = collect($this->input('checkpoints', []))->pluck('hour');
-        if ($hours->count() !== $hours->unique()->count()) {
-            $v->errors()->add('checkpoints', 'Jam cek outlet-diam tidak boleh duplikat.');
+        $mins = collect($this->input('checkpoints', []))
+            ->pluck('time')
+            ->filter()
+            ->map(fn ($t) => $this->toMinutes($t))
+            ->sort()
+            ->values();
+
+        for ($i = 1; $i < $mins->count(); $i++) {
+            $gap = $mins[$i] - $mins[$i - 1];
+            if ($gap < self::MIN_GAP_MINUTES) {
+                $v->errors()->add('checkpoints',
+                    "Jam cek tumpang tindih: hanya berjarak {$gap} menit. Setiap jam cek harus unik & berjarak minimal 30 menit.");
+
+                return;
+            }
         }
     }
 
     private function validateOperatingHours(Validator $v): void
     {
-        $byDay = collect($this->input('operating_hours', []))->groupBy('weekday');
-
-        foreach ($byDay as $weekday => $windows) {
-            // close > open per jendela
-            foreach ($windows as $i => $w) {
-                if (isset($w['open'], $w['close']) && $w['close'] <= $w['open']) {
-                    $v->errors()->add("operating_hours.{$i}.close", 'Jam tutup harus setelah jam buka.');
-                }
+        foreach ($this->input('operating_hours', []) as $i => $w) {
+            $closed = filter_var($w['is_closed'] ?? false, FILTER_VALIDATE_BOOLEAN);
+            if ($closed) {
+                continue;
             }
-
-            // tumpang tindih antar jendela di hari yang sama
-            $sorted = $windows->filter(fn ($w) => isset($w['open'], $w['close']))
-                ->sortBy('open')->values();
-            for ($j = 1; $j < $sorted->count(); $j++) {
-                if ($sorted[$j]['open'] < $sorted[$j - 1]['close']) {
-                    $v->errors()->add('operating_hours', "Jam operasional tumpang tindih pada hari {$weekday}.");
-                    break;
-                }
+            if (isset($w['open'], $w['close']) && $w['close'] <= $w['open']) {
+                $v->errors()->add("operating_hours.{$i}.close", 'Jam tutup harus setelah jam buka.');
             }
         }
+    }
+
+    private function toMinutes(string $hhmm): int
+    {
+        [$h, $m] = array_map('intval', explode(':', $hhmm));
+
+        return $h * 60 + $m;
     }
 }

@@ -6,7 +6,8 @@ use Illuminate\Support\Facades\Schema;
 
 /**
  * OPS-803/OPS-105 · titik cek outlet-diam DINAMIS per outlet (config, bukan hardcode).
- * Dibaca OPS-502 saat runtime. ambang (threshold_pct) per titik cek.
+ * Dibaca OPS-502 saat runtime. Waktu cek presisi menit (WIB); ambang outlet-level (lihat outlets).
+ * Antar jam cek wajib unik & berjarak >= 30 menit (validasi UI/Request).
  */
 return new class extends Migration
 {
@@ -15,11 +16,10 @@ return new class extends Migration
         Schema::create('outlet_checkpoints', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('id_outlet');
-            $table->unsignedTinyInteger('checkpoint_hour');          // 0-23 (WIB)
-            $table->unsignedTinyInteger('threshold_pct')->default(50); // ambang % vs baseline
+            $table->time('check_time'); // HH:MM (WIB)
             $table->timestamps();
 
-            $table->unique(['id_outlet', 'checkpoint_hour']);
+            $table->unique(['id_outlet', 'check_time']);
             $table->foreign('id_outlet')->references('id_outlet')->on('outlets')->cascadeOnDelete();
         });
     }

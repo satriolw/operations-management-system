@@ -8,10 +8,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 /** Jam operasional per weekday (OPS-803/OPS-106). */
 class OutletOperatingHour extends Model
 {
-    protected $fillable = ['id_outlet', 'weekday', 'open_time', 'close_time'];
+    protected $fillable = ['id_outlet', 'weekday', 'is_closed', 'open_time', 'close_time'];
 
     protected $casts = [
         'weekday' => 'integer',
+        'is_closed' => 'boolean',
     ];
 
     public function outlet(): BelongsTo
