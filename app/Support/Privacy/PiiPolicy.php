@@ -41,8 +41,22 @@ final class PiiPolicy
         'type', 'severity', 'progress_percentage', 'payment_status',
     ];
 
-    public static function isForbiddenColumn(string $column): bool
+    /**
+     * Pengecualian sah per-tabel: kolom infra bisnis yang kebetulan cocok token, BUKAN PII customer.
+     * mis. nomor pengirim WhatsApp = data konfigurasi, bukan telepon customer.
+     *
+     * @var array<string, string[]>
+     */
+    public const ALLOWED_COLUMNS = [
+        'whatsapp_accounts' => ['phone_number'],
+    ];
+
+    public static function isForbiddenColumn(string $column, ?string $table = null): bool
     {
+        if ($table !== null && in_array($column, self::ALLOWED_COLUMNS[$table] ?? [], true)) {
+            return false; // infra bisnis, bukan PII customer
+        }
+
         $c = strtolower($column);
         foreach (self::FORBIDDEN_COLUMN_TOKENS as $token) {
             if (str_contains($c, $token)) {
