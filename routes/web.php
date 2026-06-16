@@ -1,7 +1,19 @@
 <?php
 
+use App\Modules\Admin\Http\Controllers\UserController;
+use App\Modules\Identity\Permissions;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
 });
+
+// Admin — master data. Gate aksi sensitif: master_data.edit (OPS-801).
+Route::middleware(['web', 'auth', 'can:'.Permissions::EDIT_MASTER_DATA])
+    ->prefix('admin')->name('admin.')->group(function () {
+        // OPS-802 · User & Role
+        Route::get('users', [UserController::class, 'index'])->name('users.index');
+        Route::post('users', [UserController::class, 'store'])->name('users.store');
+        Route::put('users/{user}', [UserController::class, 'update'])->name('users.update');
+        Route::put('users/{user}/status', [UserController::class, 'toggleStatus'])->name('users.toggle');
+    });
