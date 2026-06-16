@@ -29,4 +29,30 @@ class Outlet extends Model
     {
         return $this->hasMany(ReportRun::class, 'id_outlet', 'id_outlet');
     }
+
+    public function checkpoints(): HasMany
+    {
+        return $this->hasMany(OutletCheckpoint::class, 'id_outlet', 'id_outlet');
+    }
+
+    public function operatingHours(): HasMany
+    {
+        return $this->hasMany(OutletOperatingHour::class, 'id_outlet', 'id_outlet');
+    }
+
+    public function holidays(): HasMany
+    {
+        return $this->hasMany(OutletHoliday::class, 'id_outlet', 'id_outlet');
+    }
+
+    public function baselines(): HasMany
+    {
+        return $this->hasMany(OutletBaseline::class, 'id_outlet', 'id_outlet');
+    }
+
+    /** OPS-803/OPS-501: outlet baru belum punya baseline → UI beri catatan. */
+    public function hasBaseline(): bool
+    {
+        return $this->baselines()->exists();
+    }
 }
