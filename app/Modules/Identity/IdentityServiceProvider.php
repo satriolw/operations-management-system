@@ -2,8 +2,10 @@
 
 namespace App\Modules\Identity;
 
+use App\Models\User;
 use App\Modules\Identity\Contracts\IdentityProvider;
 use Illuminate\Contracts\Auth\Factory as AuthFactory;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 
 /**
@@ -18,5 +20,11 @@ class IdentityServiceProvider extends ServiceProvider
         $this->app->bind(IdentityProvider::class, function ($app) {
             return new LocalIdentityProvider($app->make(AuthFactory::class));
         });
+    }
+
+    public function boot(): void
+    {
+        // OPS-1003 · otorisasi akses data satu outlet (controller/route binding).
+        Gate::define('access-outlet', fn (User $user, int $idOutlet) => $user->canAccessOutlet($idOutlet));
     }
 }
