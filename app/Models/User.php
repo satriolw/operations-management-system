@@ -17,7 +17,7 @@ use Spatie\Permission\Traits\HasRoles;
  * edit master data. BUKAN aktor NEVIRA: id_cashier/id_role ada pada transaksi/signal_events
  * (lihat TransactionDTO, SignalEvent) dan TIDAK dicampur ke sini (System Design §3.10).
  */
-#[Fillable(['name', 'email', 'password', 'status'])]
+#[Fillable(['name', 'email', 'password', 'status', 'nevira_user_id'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {

@@ -28,4 +28,18 @@ class SignalEvent extends Model
     {
         return $this->belongsTo(Outlet::class, 'id_outlet', 'id_outlet');
     }
+
+    /**
+     * Aktor NEVIRA yang menjadi SUBJEK sinyal (OPS-606 reviewer ≠ subjek):
+     * pembuat nota + pemohon/penyetuju (bila ada di payload).
+     *
+     * @return array<int,int>
+     */
+    public function subjectActorIds(): array
+    {
+        $ids = [$this->id_cashier, $this->payload_json['approved_by'] ?? null, $this->payload_json['requested_by'] ?? null];
+
+        return collect($ids)->filter()->map(fn ($v) => (int) $v)->unique()->values()->all();
+    }
 }
+
