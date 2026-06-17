@@ -1,5 +1,6 @@
 <?php
 
+use App\Modules\Admin\Http\Controllers\CapacityController;
 use App\Modules\Admin\Http\Controllers\DeliveryConfigController;
 use App\Modules\Admin\Http\Controllers\OutletController;
 use App\Modules\Admin\Http\Controllers\RoleLevelController;
@@ -46,6 +47,10 @@ Route::middleware(['web', 'auth', 'can:'.Permissions::EDIT_MASTER_DATA])
         Route::post('role-levels', [RoleLevelController::class, 'store'])->name('role-levels.store');
         Route::put('role-levels/{roleLevel}', [RoleLevelController::class, 'update'])->name('role-levels.update');
         Route::delete('role-levels/{roleLevel}', [RoleLevelController::class, 'destroy'])->name('role-levels.destroy');
+
+        // OPS-1101 · Master data kapasitas outlet (Epic K) → dikonsumsi OPS-1103
+        Route::get('capacity', [CapacityController::class, 'index'])->name('capacity.index');
+        Route::put('outlets/{outlet}/capacity', [CapacityController::class, 'update'])->name('capacity.update');
 
         // OPS-902 · Template Builder drag & drop (draft via OPS-1004; R7 guard)
         Route::get('templates/{template}/builder', [TemplateBuilderController::class, 'edit'])->name('templates.builder');
