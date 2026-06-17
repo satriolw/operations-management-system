@@ -4,6 +4,7 @@ use App\Modules\Admin\Http\Controllers\CapacityController;
 use App\Modules\Admin\Http\Controllers\DeliveryConfigController;
 use App\Modules\Admin\Http\Controllers\OutletController;
 use App\Modules\Admin\Http\Controllers\RoleLevelController;
+use App\Modules\Admin\Http\Controllers\TopupConfigController;
 use App\Modules\Admin\Http\Controllers\UserController;
 use App\Modules\Templating\Http\Controllers\TemplateBuilderController;
 use App\Modules\Delivery\Http\Controllers\HybridConfirmationController;
@@ -47,6 +48,10 @@ Route::middleware(['web', 'auth', 'can:'.Permissions::EDIT_MASTER_DATA])
         Route::post('role-levels', [RoleLevelController::class, 'store'])->name('role-levels.store');
         Route::put('role-levels/{roleLevel}', [RoleLevelController::class, 'update'])->name('role-levels.update');
         Route::delete('role-levels/{roleLevel}', [RoleLevelController::class, 'destroy'])->name('role-levels.destroy');
+
+        // OPS-1203 · Master data kalender pencairan + ambang saldo NEVIRA (Epic L)
+        Route::get('topup-config', [TopupConfigController::class, 'index'])->name('topup-config.index');
+        Route::put('topup-config', [TopupConfigController::class, 'update'])->name('topup-config.update');
 
         // OPS-1101 · Master data kapasitas outlet (Epic K) → dikonsumsi OPS-1103
         Route::get('capacity', [CapacityController::class, 'index'])->name('capacity.index');
