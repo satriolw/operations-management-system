@@ -34,4 +34,14 @@ interface TransactionSource
      * @return Collection<int, array<string, mixed>>
      */
     public function unpaid(int $outletId, DateRange $range): Collection;
+
+    /**
+     * Backlog order BERJALAN (belum selesai) satu outlet — sumber beban/overload (OPS-1103)
+     * & SLA nota terlambat (OPS-1301). Semua halaman dikumpulkan; record mentah (normalisasi
+     * di domain). Field SLA penting: progress_percentage, estimated_completion_date,
+     * completion_date, status, updated_at, id_rack, order_type.
+     *
+     * @return Collection<int, array<string, mixed>>
+     */
+    public function activeOrders(int $outletId): Collection;
 }

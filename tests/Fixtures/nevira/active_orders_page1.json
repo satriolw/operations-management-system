@@ -1,0 +1,51 @@
+{
+  "current_page": 1,
+  "per_page": 50,
+  "last_page": 2,
+  "total": 4,
+  "next_page_url": "https://api.nevira.id/api/transactions?id_outlet=120&per_page=50&page=2",
+  "data": [
+    {
+      "id_transaction": 9001,
+      "transaction_number": "INV/120/2026/06/9001",
+      "status": "IN_PROGRESS",
+      "grand_total": 75000,
+      "progress_percentage": 40,
+      "estimated_completion_date": "2026-06-17 18:00:00",
+      "completion_date": null,
+      "updated_at": "2026-06-17 10:15:00",
+      "id_rack": "A-12",
+      "order_type": "REGULAR",
+      "quantity": 5.0,
+      "id_outlet": 120
+    },
+    {
+      "id_transaction": 9002,
+      "transaction_number": "INV/120/2026/06/9002",
+      "status": "IN_PROGRESS",
+      "grand_total": 30000,
+      "progress_percentage": 10,
+      "estimated_completion_date": "2026-06-17 14:00:00",
+      "completion_date": null,
+      "updated_at": "2026-06-17 09:00:00",
+      "id_rack": "B-03",
+      "order_type": "DELIVERY",
+      "quantity": 2.0,
+      "id_outlet": 120
+    },
+    {
+      "id_transaction": 9003,
+      "transaction_number": "INV/120/2026/06/9003",
+      "status": "DONE",
+      "grand_total": 50000,
+      "progress_percentage": 100,
+      "estimated_completion_date": "2026-06-16 18:00:00",
+      "completion_date": "2026-06-16 17:30:00",
+      "updated_at": "2026-06-16 17:30:00",
+      "id_rack": null,
+      "order_type": "REGULAR",
+      "quantity": 3.0,
+      "id_outlet": 120
+    }
+  ]
+}

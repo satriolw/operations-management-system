@@ -39,4 +39,8 @@ return [
 
     // Batas aman jumlah halaman paginasi (anti loop tak hingga).
     'max_pages' => (int) env('NEVIRA_MAX_PAGES', 1000),
+
+    // Backlog order berjalan (OPS-1102). Param filter server "belum selesai" BELUM dikonfirmasi
+    // NEVIRA → default kosong + guard sisi-klien (completion_date null). Isi saat param resmi ada.
+    'active_orders_params' => [],
 ];

@@ -1,0 +1,23 @@
+{
+  "current_page": 2,
+  "per_page": 50,
+  "last_page": 2,
+  "total": 4,
+  "next_page_url": null,
+  "data": [
+    {
+      "id_transaction": 9004,
+      "transaction_number": "INV/120/2026/06/9004",
+      "status": "WASHING",
+      "grand_total": 120000,
+      "progress_percentage": 25,
+      "estimated_completion_date": "2026-06-17 20:00:00",
+      "completion_date": null,
+      "updated_at": "2026-06-17 11:40:00",
+      "id_rack": "C-07",
+      "order_type": "NON_SCHEDULE_DELIVERY",
+      "quantity": 8.0,
+      "id_outlet": 120
+    }
+  ]
+}

@@ -76,6 +76,23 @@ final class NeviraApiSource implements TransactionSource
         ]);
     }
 
+    public function activeOrders(int $outletId): Collection
+    {
+        // Param server "order belum selesai" BELUM dikonfirmasi NEVIRA (enum status terminal jg
+        // perlu konfirmasi, Epic M) → params configurable + guard sisi-klien (completion_date null).
+        $params = (array) config('nevira.active_orders_params', []);
+
+        return $this->collectPages('/api/transactions', $params + ['id_outlet' => $outletId])
+            ->filter(fn ($row) => $this->isActiveOrder($row)) // backlog aktif = belum selesai
+            ->values();
+    }
+
+    /** Backlog aktif = belum selesai. completion_date null = belum selesai (sinyal utama). */
+    private function isActiveOrder(array $row): bool
+    {
+        return ($row['completion_date'] ?? null) === null;
+    }
+
     /**
      * Ikuti paginasi Laravel NEVIRA sampai habis (next_page_url null / current_page ≥ last_page).
      *
