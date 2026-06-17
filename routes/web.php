@@ -3,12 +3,18 @@
 use App\Modules\Admin\Http\Controllers\DeliveryConfigController;
 use App\Modules\Admin\Http\Controllers\OutletController;
 use App\Modules\Admin\Http\Controllers\UserController;
+use App\Modules\Delivery\Http\Controllers\HybridConfirmationController;
 use App\Modules\Identity\Permissions;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
 });
+
+// OPS-302 · Head Store konfirmasi "Sudah saya kirim" (hybrid). Gate APPROVE_AND_SEND + scoping di controller.
+Route::middleware(['web', 'auth'])
+    ->put('deliveries/{delivery}/confirm', [HybridConfirmationController::class, 'confirm'])
+    ->name('deliveries.confirm');
 
 // Admin — master data. Gate aksi sensitif: master_data.edit (OPS-801).
 Route::middleware(['web', 'auth', 'can:'.Permissions::EDIT_MASTER_DATA])
