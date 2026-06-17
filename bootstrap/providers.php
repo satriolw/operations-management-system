@@ -1,5 +1,6 @@
 <?php
 
+use App\Modules\Finance\FinanceServiceProvider;
 use App\Modules\Identity\IdentityServiceProvider;
 use App\Modules\Ingestion\IngestionServiceProvider;
 use App\Modules\Reporting\ReportingServiceProvider;
@@ -12,4 +13,5 @@ return [
     IdentityServiceProvider::class,
     ReportingServiceProvider::class,
     SignalsServiceProvider::class,
+    FinanceServiceProvider::class,
 ];
