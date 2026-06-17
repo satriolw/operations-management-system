@@ -35,6 +35,7 @@ final class TransactionParser
             paymentStatus: $row['payment_status'] ?? null,
             progressPercentage: (int) ($row['progress_percentage'] ?? 0),
             idOutlet: isset($row['id_outlet']) ? (int) $row['id_outlet'] : null,
+            idRole: data_get($row, 'cashier.id_role') !== null ? (int) data_get($row, 'cashier.id_role') : null,
         );
     }
 
