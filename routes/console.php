@@ -35,3 +35,6 @@ Schedule::command('oms:capture-balance-snapshot')->everySixHours()->timezone('As
 
 // Sinyal saldo: alert runway (OPS-1204) + nudge pengajuan (OPS-1205) — pagi WIB, sebelum cutoff.
 Schedule::command('oms:check-balance-signals')->dailyAt('08:00')->timezone('Asia/Jakarta');
+
+// Atribusi biaya saldo per outlet (OPS-1206, P2) — bulanan, awal bulan utk bulan sebelumnya.
+Schedule::command('oms:attribute-balance-cost')->monthlyOn(1, '04:00')->timezone('Asia/Jakarta');

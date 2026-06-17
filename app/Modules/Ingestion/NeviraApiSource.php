@@ -108,11 +108,28 @@ final class NeviraApiSource implements TransactionSource
     }
 
     /**
-     * Ikuti paginasi Laravel NEVIRA sampai habis (next_page_url null / current_page ≥ last_page).
+     * Riwayat biaya saldo merchant (OPS-1206) — baris ber-id_outlet untuk atribusi biaya per outlet.
+     * Paginasi penuh; pemanggil WAJIB membatasi rentang (per hari) agar tak menabrak page-cap (Epic L:
+     * ~66 hal/hari, ~1.989/30 hari). Bukan jalur runway (OPS-1201 cukup saldo+breakdown).
      *
      * @return Collection<int, array<string, mixed>>
      */
-    private function collectPages(string $path, array $query): Collection
+    public function merchantCostHistory(DateRange $range): Collection
+    {
+        return $this->collectPages('/api/merchant_balance', [
+            'merchant_id' => (int) config('nevira.merchant_id', 69),
+            'date_start' => $range->startDate(),
+            'date_end' => $range->endDate(),
+        ], 'history');
+    }
+
+    /**
+     * Ikuti paginasi Laravel NEVIRA sampai habis (next_page_url null / current_page ≥ last_page).
+     * $dataKey = kunci array baris ('data' default; 'history' untuk merchant_balance).
+     *
+     * @return Collection<int, array<string, mixed>>
+     */
+    private function collectPages(string $path, array $query, string $dataKey = 'data'): Collection
     {
         $rows = collect();
         $page = 1;
@@ -124,10 +141,10 @@ final class NeviraApiSource implements TransactionSource
                 'page' => $page,
             ]);
 
-            $data = $payload['data'] ?? null;
+            $data = $payload[$dataKey] ?? null;
             if (! is_array($data)) {
                 throw new NeviraRequestException(
-                    "Response NEVIRA {$path} tak punya array 'data' (page {$page}) — bentuk berubah?"
+                    "Response NEVIRA {$path} tak punya array '{$dataKey}' (page {$page}) — bentuk berubah?"
                 );
             }
             $rows = $rows->concat($data);
@@ -136,6 +153,14 @@ final class NeviraApiSource implements TransactionSource
             $current = (int) ($payload['current_page'] ?? $page);
             $hasNext = ! empty($payload['next_page_url']) && $current < $lastPage;
             $page++;
+
+            // Jangan truncate diam-diam: bila menabrak cap padahal masih ada halaman, alert.
+            if ($hasNext && $page > $maxPages) {
+                Metrics::increment(Metrics::NEVIRA_CALLS); // jejak; detail di log
+                \Illuminate\Support\Facades\Log::channel('oms')->warning('nevira.pagination_capped', [
+                    'path' => $path, 'data_key' => $dataKey, 'max_pages' => $maxPages, 'last_page' => $lastPage,
+                ]);
+            }
         } while ($hasNext && $page <= $maxPages);
 
         return $rows->values();
