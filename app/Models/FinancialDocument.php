@@ -39,7 +39,8 @@ class FinancialDocument extends Model
     protected $casts = [
         'amount' => 'decimal:2',
         'current_level' => 'integer',
-        'payload_json' => 'array',
+        // M2-06 §6: payload memuat rekening payee + PII customer (Refund) → enkripsi-at-rest.
+        'payload_json' => 'encrypted:array',
         'finalized_at' => 'datetime',
     ];
 

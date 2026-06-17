@@ -31,6 +31,10 @@ Route::middleware(['web', 'auth'])
 Route::middleware(['web', 'auth'])->prefix('finance')->name('finance.')->group(function () {
     Route::get('documents', [\App\Modules\Finance\Http\Controllers\DocumentController::class, 'index'])->name('documents.index');
     Route::get('documents/{document}', [\App\Modules\Finance\Http\Controllers\DocumentController::class, 'show'])->name('documents.show');
+
+    // M2-06 · lampiran bukti (disk privat + akses ter-scope di controller)
+    Route::post('documents/{document}/attachments', [\App\Modules\Finance\Http\Controllers\AttachmentController::class, 'store'])->name('documents.attachments.store');
+    Route::get('documents/{document}/attachments/{attachment}/download', [\App\Modules\Finance\Http\Controllers\AttachmentController::class, 'download'])->name('documents.attachments.download');
 });
 
 // Admin — master data. Gate aksi sensitif: master_data.edit (OPS-801).

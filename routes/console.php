@@ -38,3 +38,6 @@ Schedule::command('oms:check-balance-signals')->dailyAt('08:00')->timezone('Asia
 
 // Atribusi biaya saldo per outlet (OPS-1206, P2) — bulanan, awal bulan utk bulan sebelumnya.
 Schedule::command('oms:attribute-balance-cost')->monthlyOn(1, '04:00')->timezone('Asia/Jakarta');
+
+// Retensi lampiran bukti dokumen keuangan (M2-06, selaras OPS-705) — bulanan dini hari.
+Schedule::command('oms:purge-finance-attachments')->monthlyOn(1, '03:30')->timezone('Asia/Jakarta');
