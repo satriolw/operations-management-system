@@ -75,11 +75,10 @@ final class SilentOutletCheck
             ],
         );
 
-        if ($signal->wasRecentlyCreated) {
-            Alerter::raise('outlet.silent', [ // ke Head Store/Area Manager (real-time)
-                'id_outlet' => $idOutlet, 'checkpoint_hour' => $hour, 'realized' => $realized, 'date' => $today,
-            ]);
-        }
+        // OPS-503: maksimal 1 alert "diam" per outlet per titik cek per hari.
+        Alerter::raiseOnce("silent:{$idOutlet}:{$hour}:{$today}", 'outlet.silent', [
+            'id_outlet' => $idOutlet, 'checkpoint_hour' => $hour, 'realized' => $realized, 'date' => $today,
+        ]);
 
         return $signal;
     }
