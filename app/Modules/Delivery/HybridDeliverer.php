@@ -29,7 +29,7 @@ final class HybridDeliverer implements Deliverer
             [
                 'id_outlet' => $run->id_outlet,
                 'target' => $target->investor_label,             // label, bukan PII
-                'status' => 'awaiting_confirmation',             // draft ke Head Store; tunggu "Sudah saya kirim" (OPS-302)
+                'status' => ReportDelivery::AWAITING_CONFIRMATION, // draft ke Head Store; tunggu "Sudah saya kirim" (OPS-302)
                 'idempotency_key' => IdempotencyKey::delivery($run->id, self::CHANNEL),
             ],
         );
