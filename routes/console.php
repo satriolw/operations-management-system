@@ -26,3 +26,6 @@ Schedule::command('oms:purge-raw-payloads')->dailyAt('03:00')->timezone('Asia/Ja
 
 // Watchdog pengiriman (OPS-704) — cek setelah jendela kirim malam, sebelum purge.
 Schedule::command('oms:watchdog-deliveries')->dailyAt('23:30')->timezone('Asia/Jakarta');
+
+// Digest sinyal low (OPS-1002) — pagi WIB, bukan notifikasi per-kejadian.
+Schedule::command('oms:signal-digest')->dailyAt('07:00')->timezone('Asia/Jakarta');

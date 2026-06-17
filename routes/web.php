@@ -2,9 +2,11 @@
 
 use App\Modules\Admin\Http\Controllers\DeliveryConfigController;
 use App\Modules\Admin\Http\Controllers\OutletController;
+use App\Modules\Admin\Http\Controllers\RoleLevelController;
 use App\Modules\Admin\Http\Controllers\UserController;
 use App\Modules\Delivery\Http\Controllers\HybridConfirmationController;
 use App\Modules\Identity\Permissions;
+use App\Modules\Signals\Http\Controllers\SignalReviewController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -15,6 +17,11 @@ Route::get('/', function () {
 Route::middleware(['web', 'auth'])
     ->put('deliveries/{delivery}/confirm', [HybridConfirmationController::class, 'confirm'])
     ->name('deliveries.confirm');
+
+// OPS-606 · tinjau sinyal (gate REVIEW_SIGNALS + scoping + reviewer≠subjek di request/controller).
+Route::middleware(['web', 'auth'])
+    ->post('signals/{signal}/review', [SignalReviewController::class, 'review'])
+    ->name('signals.review');
 
 // Admin — master data. Gate aksi sensitif: master_data.edit (OPS-801).
 Route::middleware(['web', 'auth', 'can:'.Permissions::EDIT_MASTER_DATA])
@@ -32,4 +39,10 @@ Route::middleware(['web', 'auth', 'can:'.Permissions::EDIT_MASTER_DATA])
         Route::post('users', [UserController::class, 'store'])->name('users.store');
         Route::put('users/{user}', [UserController::class, 'update'])->name('users.update');
         Route::put('users/{user}/status', [UserController::class, 'toggleStatus'])->name('users.toggle');
+
+        // OPS-805 · master data referensi: peta id_role→level (untuk OPS-601)
+        Route::get('role-levels', [RoleLevelController::class, 'index'])->name('role-levels.index');
+        Route::post('role-levels', [RoleLevelController::class, 'store'])->name('role-levels.store');
+        Route::put('role-levels/{roleLevel}', [RoleLevelController::class, 'update'])->name('role-levels.update');
+        Route::delete('role-levels/{roleLevel}', [RoleLevelController::class, 'destroy'])->name('role-levels.destroy');
     });
