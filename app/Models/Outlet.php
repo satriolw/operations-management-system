@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
  * Outlet (OPS-101 schema). PK = id_outlet (id NEVIRA, natural key, non-incrementing).
@@ -52,6 +53,11 @@ class Outlet extends Model
     public function baselines(): HasMany
     {
         return $this->hasMany(OutletBaseline::class, 'id_outlet', 'id_outlet');
+    }
+
+    public function capacity(): HasOne
+    {
+        return $this->hasOne(OutletCapacity::class, 'id_outlet', 'id_outlet');
     }
 
     /** OPS-803/OPS-501: outlet baru belum punya baseline → UI beri catatan. */
