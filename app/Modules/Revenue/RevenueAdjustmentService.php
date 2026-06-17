@@ -15,7 +15,10 @@ use Illuminate\Support\Facades\DB;
  */
 final class RevenueAdjustmentService
 {
-    public function __construct(private readonly RevenueAdjustmentDetector $detector) {}
+    public function __construct(
+        private readonly RevenueAdjustmentDetector $detector,
+        private readonly RevenueReconciler $reconciler,
+    ) {}
 
     public function process(int $idOutlet, string $today): RestateSummary
     {
@@ -35,6 +38,7 @@ final class RevenueAdjustmentService
                     'correction' => $correctionTotal,
                     'new' => $old !== null ? $old - $correctionTotal : null,
                     'count' => $items->count(),
+                    'previously_reported' => $this->reconciler->wasReported($idOutlet, $date), // OPS-404
                 ];
             }
 
