@@ -4,6 +4,7 @@ use App\Modules\Admin\Http\Controllers\DeliveryConfigController;
 use App\Modules\Admin\Http\Controllers\OutletController;
 use App\Modules\Admin\Http\Controllers\RoleLevelController;
 use App\Modules\Admin\Http\Controllers\UserController;
+use App\Modules\Templating\Http\Controllers\TemplateBuilderController;
 use App\Modules\Delivery\Http\Controllers\HybridConfirmationController;
 use App\Modules\Identity\Permissions;
 use App\Modules\Signals\Http\Controllers\SignalReviewController;
@@ -45,4 +46,9 @@ Route::middleware(['web', 'auth', 'can:'.Permissions::EDIT_MASTER_DATA])
         Route::post('role-levels', [RoleLevelController::class, 'store'])->name('role-levels.store');
         Route::put('role-levels/{roleLevel}', [RoleLevelController::class, 'update'])->name('role-levels.update');
         Route::delete('role-levels/{roleLevel}', [RoleLevelController::class, 'destroy'])->name('role-levels.destroy');
+
+        // OPS-902 · Template Builder drag & drop (draft via OPS-1004; R7 guard)
+        Route::get('templates/{template}/builder', [TemplateBuilderController::class, 'edit'])->name('templates.builder');
+        Route::post('templates/{template}/draft', [TemplateBuilderController::class, 'saveDraft'])->name('templates.draft');
+        Route::post('templates/{template}/versions/{version}/publish', [TemplateBuilderController::class, 'publish'])->name('templates.publish');
     });
