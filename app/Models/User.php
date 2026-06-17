@@ -50,10 +50,16 @@ class User extends Authenticatable
 
     // --- Scoping per-outlet (OPS-1003) ---
 
-    /** Admin = akses semua outlet (tanpa assignment). */
+    /** Role ber-scope 'all' = akses semua outlet tanpa assignment (admin + OM/HoO Modul 2). */
     public function canAccessAllOutlets(): bool
     {
-        return $this->hasRole(\App\Modules\Identity\Permissions::ROLE_ADMIN);
+        foreach ($this->getRoleNames() as $role) {
+            if (\App\Modules\Identity\Permissions::scopeFor($role) === 'all') {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /** @return array<int,int> id_outlet yang di-assign ke user ini. */
