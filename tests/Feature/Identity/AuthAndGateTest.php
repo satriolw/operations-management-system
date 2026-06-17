@@ -23,8 +23,10 @@ it('login berhasil dgn kredensial benar, gagal dgn salah', function () {
     expect(Auth::attempt(['email' => $user->email, 'password' => 'salah']))->toBeFalse();
 });
 
-it('seeder membuat 4 role + 3 permission sesuai katalog', function () {
-    expect(\Spatie\Permission\Models\Role::count())->toBe(4)
+it('seeder membuat semua role katalog + 3 permission', function () {
+    // 6 role: admin, head_store, area_manager, ops + operations_manager, head_of_operations (Modul 2)
+    expect(\Spatie\Permission\Models\Role::count())->toBe(count(Permissions::roles()))
+        ->and(\Spatie\Permission\Models\Role::count())->toBe(6)
         ->and(\Spatie\Permission\Models\Permission::count())->toBe(3);
 });
 
