@@ -2,6 +2,9 @@
 
 namespace App\Models;
 
+use App\Support\Time\Wib;
+use Carbon\CarbonImmutable;
+use Carbon\CarbonInterface;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -47,5 +50,29 @@ class NeviraTopupConfig extends Model
     {
         return collect($this->disbursement_weekdays ?? [])
             ->map(fn ($d) => (int) $d)->filter(fn ($d) => $d >= 0 && $d <= 6)->unique()->sort()->values()->all();
+    }
+
+    /**
+     * Tanggal pencairan mendatang (startOfDay WIB) mulai $from inklusif. Dipakai nudge OPS-1205.
+     *
+     * @return array<int,CarbonImmutable>
+     */
+    public function upcomingDisbursements(CarbonInterface $from, int $count = 2): array
+    {
+        $days = $this->weekdays();
+        if ($days === []) {
+            return [];
+        }
+
+        $base = Wib::normalize($from)->startOfDay();
+        $out = [];
+        for ($i = 0; $i < 60 && count($out) < $count; $i++) {
+            $d = $base->addDays($i);
+            if (in_array($d->dayOfWeek, $days, true)) {
+                $out[] = $d;
+            }
+        }
+
+        return $out;
     }
 }

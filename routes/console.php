@@ -32,3 +32,6 @@ Schedule::command('oms:signal-digest')->dailyAt('07:00')->timezone('Asia/Jakarta
 
 // Snapshot saldo merchant NEVIRA (OPS-1201, Epic L) — berkala utk burn/runway (OPS-1202).
 Schedule::command('oms:capture-balance-snapshot')->everySixHours()->timezone('Asia/Jakarta');
+
+// Sinyal saldo: alert runway (OPS-1204) + nudge pengajuan (OPS-1205) — pagi WIB, sebelum cutoff.
+Schedule::command('oms:check-balance-signals')->dailyAt('08:00')->timezone('Asia/Jakarta');
