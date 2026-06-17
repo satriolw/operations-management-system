@@ -29,6 +29,7 @@ final class TransactionDTO
         public readonly ?string $paymentStatus,    // PAID|UNPAID
         public readonly int $progressPercentage,
         public readonly ?int $idOutlet,
+        public readonly ?int $idRole = null,        // id_role aktor (proxy penyetuju saat self-approval; OPS-601)
     ) {}
 
     public function isVoid(): bool
