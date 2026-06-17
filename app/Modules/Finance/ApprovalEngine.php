@@ -21,7 +21,10 @@ use Illuminate\Support\Facades\DB;
  */
 final class ApprovalEngine
 {
-    public function __construct(private readonly ChainResolver $resolver) {}
+    public function __construct(
+        private readonly ChainResolver $resolver,
+        private readonly ApproverNotifier $notifier,
+    ) {}
 
     /** DRAFT → SUBMITTED (hitung band, set level 1). Hanya dari DRAFT. */
     public function submit(FinancialDocument $doc, User $actor): FinancialDocument
@@ -36,6 +39,8 @@ final class ApprovalEngine
         $doc->status = FinancialDocument::STATUS_SUBMITTED;
         $doc->current_level = 1;
         $doc->save();
+
+        $this->notifier->notifyNext($doc); // M2-08: beri tahu approver L1
 
         return $doc;
     }
@@ -65,6 +70,10 @@ final class ApprovalEngine
                 $doc->current_level = $level + 1;
             }
             $doc->save();
+
+            if (! $doc->isFinal()) {
+                $this->notifier->notifyNext($doc); // M2-08: beri tahu approver level berikutnya
+            }
 
             return $doc;
         });
