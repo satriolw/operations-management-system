@@ -12,6 +12,9 @@ return [
     'service_username' => env('NEVIRA_SERVICE_USERNAME'),
     'service_password' => env('NEVIRA_SERVICE_PASSWORD'),
 
+    // Saldo deposit tingkat-merchant (Epic L). Satu akun seluruh jaringan (id_merchant 69).
+    'merchant_id' => env('NEVIRA_MERCHANT_ID', 69),
+
     // --- Token lifecycle login 24 jam (OPS-108) ---
     'login_path' => env('NEVIRA_LOGIN_PATH', '/api/login'),
     'auth' => [

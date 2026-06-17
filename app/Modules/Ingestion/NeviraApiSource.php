@@ -6,6 +6,7 @@ use App\Modules\Ingestion\Contracts\AccessTokenProvider;
 use App\Modules\Ingestion\Contracts\TransactionSource;
 use App\Modules\Ingestion\DTO\DashboardDTO;
 use App\Modules\Ingestion\DTO\DateRange;
+use App\Modules\Ingestion\DTO\MerchantBalanceDTO;
 use App\Modules\Ingestion\Exceptions\NeviraAuthException;
 use App\Modules\Ingestion\Exceptions\NeviraRequestException;
 use App\Support\Observability\Metrics;
@@ -91,6 +92,19 @@ final class NeviraApiSource implements TransactionSource
     private function isActiveOrder(array $row): bool
     {
         return ($row['completion_date'] ?? null) === null;
+    }
+
+    public function merchantBalance(DateRange $range): MerchantBalanceDTO
+    {
+        // SATU request — ambil saldo_total + breakdown saja. JANGAN ikuti next_page_url history
+        // (Epic L: ~1.989 halaman). Untuk runway cukup saldo + breakdown.
+        $payload = $this->get('/api/merchant_balance', [
+            'merchant_id' => (int) config('nevira.merchant_id', 69),
+            'date_start' => $range->startDate(),
+            'date_end' => $range->endDate(),
+        ]);
+
+        return MerchantBalanceDTO::fromResponse($payload);
     }
 
     /**
