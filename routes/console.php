@@ -23,3 +23,6 @@ try {
 
 // Retensi payload mentah (OPS-705) — harian dini hari WIB.
 Schedule::command('oms:purge-raw-payloads')->dailyAt('03:00')->timezone('Asia/Jakarta');
+
+// Watchdog pengiriman (OPS-704) — cek setelah jendela kirim malam, sebelum purge.
+Schedule::command('oms:watchdog-deliveries')->dailyAt('23:30')->timezone('Asia/Jakarta');
