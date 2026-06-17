@@ -18,6 +18,9 @@ final class Permissions
     public const ROLE_HEAD_STORE = 'head_store';
     public const ROLE_AREA_MANAGER = 'area_manager';
     public const ROLE_OPS = 'ops';
+    // Modul 2 (Finance) — rantai approval per band (System Design §4): AM→OM (LOW), OM→HoO (HIGH).
+    public const ROLE_OPERATIONS_MANAGER = 'operations_manager';
+    public const ROLE_HEAD_OF_OPERATIONS = 'head_of_operations';
 
     /** @return string[] */
     public static function all(): array
@@ -28,7 +31,10 @@ final class Permissions
     /** @return string[] */
     public static function roles(): array
     {
-        return [self::ROLE_ADMIN, self::ROLE_HEAD_STORE, self::ROLE_AREA_MANAGER, self::ROLE_OPS];
+        return [
+            self::ROLE_ADMIN, self::ROLE_HEAD_STORE, self::ROLE_AREA_MANAGER, self::ROLE_OPS,
+            self::ROLE_OPERATIONS_MANAGER, self::ROLE_HEAD_OF_OPERATIONS,
+        ];
     }
 
     /**
@@ -44,6 +50,8 @@ final class Permissions
             self::ROLE_HEAD_STORE => 'single',
             self::ROLE_AREA_MANAGER => 'multi',
             self::ROLE_OPS => 'multi',
+            self::ROLE_OPERATIONS_MANAGER => 'all', // mengawasi jaringan (approval lintas outlet)
+            self::ROLE_HEAD_OF_OPERATIONS => 'all',
         ];
     }
 
@@ -64,6 +72,9 @@ final class Permissions
             self::ROLE_HEAD_STORE => [self::APPROVE_AND_SEND, self::REVIEW_SIGNALS],
             self::ROLE_AREA_MANAGER => [self::REVIEW_SIGNALS],
             self::ROLE_OPS => [self::REVIEW_SIGNALS],
+            // OM/HoO: approval Modul 2 via keanggotaan chain (M2-03), bukan permission Modul 1.
+            self::ROLE_OPERATIONS_MANAGER => [],
+            self::ROLE_HEAD_OF_OPERATIONS => [],
         ];
     }
 }

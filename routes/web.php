@@ -1,5 +1,6 @@
 <?php
 
+use App\Modules\Admin\Http\Controllers\ApprovalChainController;
 use App\Modules\Admin\Http\Controllers\CapacityController;
 use App\Modules\Admin\Http\Controllers\DeliveryConfigController;
 use App\Modules\Admin\Http\Controllers\OutletController;
@@ -48,6 +49,12 @@ Route::middleware(['web', 'auth', 'can:'.Permissions::EDIT_MASTER_DATA])
         Route::post('role-levels', [RoleLevelController::class, 'store'])->name('role-levels.store');
         Route::put('role-levels/{roleLevel}', [RoleLevelController::class, 'update'])->name('role-levels.update');
         Route::delete('role-levels/{roleLevel}', [RoleLevelController::class, 'destroy'])->name('role-levels.destroy');
+
+        // M2-02 · Master data rantai approval dokumen keuangan (Modul 2 Finance)
+        Route::get('approval-chains', [ApprovalChainController::class, 'index'])->name('approval-chains.index');
+        Route::post('approval-chains', [ApprovalChainController::class, 'store'])->name('approval-chains.store');
+        Route::put('approval-chains/{approvalChain}', [ApprovalChainController::class, 'update'])->name('approval-chains.update');
+        Route::delete('approval-chains/{approvalChain}', [ApprovalChainController::class, 'destroy'])->name('approval-chains.destroy');
 
         // OPS-1203 · Master data kalender pencairan + ambang saldo NEVIRA (Epic L)
         Route::get('topup-config', [TopupConfigController::class, 'index'])->name('topup-config.index');
