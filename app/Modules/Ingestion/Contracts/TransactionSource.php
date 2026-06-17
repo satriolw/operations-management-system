@@ -52,4 +52,13 @@ interface TransactionSource
      * antar-snapshot (OPS-1202). $range membatasi jendela breakdown count per aksi.
      */
     public function merchantBalance(DateRange $range): MerchantBalanceDTO;
+
+    /**
+     * Riwayat biaya saldo merchant ber-id_outlet (OPS-1206) — untuk atribusi biaya per outlet.
+     * Paginasi penuh; PEMANGGIL wajib membatasi rentang (per hari) agar tak menabrak page-cap.
+     * Bukan jalur runway. Record mentah (action/id_outlet/amount).
+     *
+     * @return Collection<int, array<string, mixed>>
+     */
+    public function merchantCostHistory(DateRange $range): Collection;
 }
