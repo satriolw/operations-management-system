@@ -1,0 +1,18 @@
+{
+  "merchant_id": 69,
+  "saldo_total": 4850000,
+  "breakdown": {
+    "nota_transaksi": 1200,
+    "cetak_struk": 1200,
+    "kirim_whatsapp": 300,
+    "export_laporan": 12
+  },
+  "current_page": 1,
+  "per_page": 10,
+  "last_page": 1989,
+  "next_page_url": "https://api.nevira.id/api/merchant_balance?merchant_id=69&page=2",
+  "history": [
+    { "id_transaction": 1, "action": "nota_transaksi", "amount": -100, "id_outlet": 120 },
+    { "id_transaction": 2, "action": "kirim_whatsapp", "amount": -75, "id_outlet": 121 }
+  ]
+}

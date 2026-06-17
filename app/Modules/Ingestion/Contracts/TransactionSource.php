@@ -4,6 +4,7 @@ namespace App\Modules\Ingestion\Contracts;
 
 use App\Modules\Ingestion\DTO\DashboardDTO;
 use App\Modules\Ingestion\DTO\DateRange;
+use App\Modules\Ingestion\DTO\MerchantBalanceDTO;
 use Carbon\CarbonInterface;
 use Illuminate\Support\Collection;
 
@@ -44,4 +45,11 @@ interface TransactionSource
      * @return Collection<int, array<string, mixed>>
      */
     public function activeOrders(int $outletId): Collection;
+
+    /**
+     * Saldo deposit tingkat-merchant (Epic L, OPS-1201) — saldo_total + breakdown.
+     * SATU request: TIDAK menarik history (paginated, ~1.989 halaman). Runway/burn = delta
+     * antar-snapshot (OPS-1202). $range membatasi jendela breakdown count per aksi.
+     */
+    public function merchantBalance(DateRange $range): MerchantBalanceDTO;
 }

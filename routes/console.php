@@ -29,3 +29,6 @@ Schedule::command('oms:watchdog-deliveries')->dailyAt('23:30')->timezone('Asia/J
 
 // Digest sinyal low (OPS-1002) — pagi WIB, bukan notifikasi per-kejadian.
 Schedule::command('oms:signal-digest')->dailyAt('07:00')->timezone('Asia/Jakarta');
+
+// Snapshot saldo merchant NEVIRA (OPS-1201, Epic L) — berkala utk burn/runway (OPS-1202).
+Schedule::command('oms:capture-balance-snapshot')->everySixHours()->timezone('Asia/Jakarta');
