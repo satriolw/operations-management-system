@@ -17,6 +17,9 @@ return [
 
     // --- Token lifecycle login 24 jam (OPS-108) ---
     'login_path' => env('NEVIRA_LOGIN_PATH', '/api/login'),
+    // Nama field identitas pada body login. NEVIRA pakai 'email' (dikonfirmasi via cURL 18 Jun 2026).
+    // Bisa di-override via .env bila berubah. (HTTP 400 saat login biasanya = field ini salah.)
+    'login_identity_field' => env('NEVIRA_LOGIN_IDENTITY_FIELD', 'email'),
     'auth' => [
         'cache_key' => env('NEVIRA_TOKEN_CACHE_KEY', 'nevira:access_token'),
         // null = pakai cache default (Redis di prod, array saat test). Shared antar worker.
