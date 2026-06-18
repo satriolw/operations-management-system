@@ -175,3 +175,25 @@ it('DateRange.lookback membentuk jendela 7 hari untuk Penyesuaian Revenue', func
     expect($range->startDate())->toBe('2026-06-05')
         ->and($range->endDate())->toBe('2026-06-12');
 });
+
+it('delta polling (OPS-109): param updated_since dikirim hanya bila config diset & since diberikan', function () {
+    Http::fake(fn () => Http::response(['data' => [], 'current_page' => 1, 'last_page' => 1]));
+    config(['nevira.transactions_updated_since_param' => 'updated_since']);
+
+    app(TransactionSource::class)->dailyTransactions(
+        120, new DateRange('2026-06-15', '2026-06-15'), \App\Support\Time\Wib::parse('2026-06-15 09:30:00')
+    );
+
+    Http::assertSent(fn (Request $r) => str_contains(urldecode($r->url()), 'updated_since=2026-06-15 09:30:00'));
+});
+
+it('delta polling mati saat param tak dikonfigurasi (jendela penuh, perilaku lama)', function () {
+    Http::fake(fn () => Http::response(['data' => [], 'current_page' => 1, 'last_page' => 1]));
+    config(['nevira.transactions_updated_since_param' => null]);
+
+    app(TransactionSource::class)->dailyTransactions(
+        120, new DateRange('2026-06-15', '2026-06-15'), \App\Support\Time\Wib::parse('2026-06-15 09:30:00')
+    );
+
+    Http::assertSent(fn (Request $r) => ! str_contains($r->url(), 'updated_since'));
+});

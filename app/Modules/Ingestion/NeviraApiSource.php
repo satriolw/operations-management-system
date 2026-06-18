@@ -10,6 +10,7 @@ use App\Modules\Ingestion\DTO\MerchantBalanceDTO;
 use App\Modules\Ingestion\Exceptions\NeviraAuthException;
 use App\Modules\Ingestion\Exceptions\NeviraRequestException;
 use App\Support\Observability\Metrics;
+use App\Support\Time\Wib;
 use Carbon\CarbonInterface;
 use Illuminate\Http\Client\Factory as HttpFactory;
 use Illuminate\Http\Client\Response;
@@ -123,14 +124,22 @@ final class NeviraApiSource implements TransactionSource
         ], 'history');
     }
 
-    public function dailyTransactions(int $outletId, DateRange $range): Collection
+    public function dailyTransactions(int $outletId, DateRange $range, ?CarbonInterface $updatedSince = null): Collection
     {
         // Semua transaksi rentang (Epic N audit). Reuse paginasi; record mentah (no PII di domain).
-        return $this->collectPages('/api/transactions', [
+        $query = [
             'id_outlet' => $outletId,
             'start_date' => $range->startDate(),
             'end_date' => $range->endDate(),
-        ]);
+        ];
+
+        // Delta polling (OPS-109): hanya bila param dikonfigurasi (NEVIRA mendukung) DAN watermark ada.
+        $deltaParam = config('nevira.transactions_updated_since_param');
+        if ($deltaParam && $updatedSince !== null) {
+            $query[(string) $deltaParam] = Wib::normalize($updatedSince)->format('Y-m-d H:i:s');
+        }
+
+        return $this->collectPages('/api/transactions', $query);
     }
 
     /**
