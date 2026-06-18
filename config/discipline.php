@@ -20,6 +20,10 @@ return [
     'reminder_hour' => (int) env('DISCIPLINE_REMINDER_HOUR', 12),
     'escalation_hour' => (int) env('DISCIPLINE_ESCALATION_HOUR', 20),
 
+    // Anti-gaming leaderboard (M3-06): rata-rata bergerak N periode (termasuk periode ini) → dorongan
+    // mepet deadline tak melonjakkan rank.
+    'leaderboard_moving_avg_periods' => (int) env('DISCIPLINE_LB_MOVING_AVG', 2),
+
     // Bobot metrik leaderboard ternormalisasi (M3-05) — setara default, configurable.
     'leaderboard_weights' => [
         'growth' => (float) env('DISCIPLINE_W_GROWTH', 1),
