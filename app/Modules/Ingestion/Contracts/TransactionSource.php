@@ -67,7 +67,11 @@ interface TransactionSource
      * payments[], services[].price vs price-list, quantity vs actual_quantity, customer deposit.
      * Semua halaman dikumpulkan; record mentah (parsing di domain). Reuse poller, anti-corruption.
      *
+     * $updatedSince (OPS-109, delta polling) opsional: bila NEVIRA mendukung filter "ubah sejak"
+     * (config `nevira.transactions_updated_since_param`), poller bisa menarik hanya yang berubah
+     * untuk payload jauh lebih kecil. null / param tak dikonfigurasi → jendela penuh (perilaku lama).
+     *
      * @return Collection<int, array<string, mixed>>
      */
-    public function dailyTransactions(int $outletId, DateRange $range): Collection;
+    public function dailyTransactions(int $outletId, DateRange $range, ?CarbonInterface $updatedSince = null): Collection;
 }

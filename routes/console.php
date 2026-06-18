@@ -55,8 +55,10 @@ Schedule::command('oms:score-checklists')->dailyAt('22:30')->timezone('Asia/Jaka
 // Leaderboard ternormalisasi (M3-06) — harian (rata-rata bergerak meredam dorongan akhir periode).
 Schedule::command('oms:build-leaderboard')->dailyAt('23:10')->timezone('Asia/Jakarta');
 
-// Nota terlambat / macet (Epic M, OPS-1303) — tiap jam saat jam operasional.
-Schedule::command('oms:check-late-orders')->hourlyAt(15)->timezone('Asia/Jakarta');
+// Nota terlambat / macet (Epic M, OPS-1303) — adaptive polling (OPS-109): tick tiap 10 menit;
+// PollScheduler menggerbang per outlet (buka sekarang + cadence efektif via watermark). Latensi
+// turun dari ≤60 mnt jadi ~cadence (default 15 mnt), tanpa banjir API saat tutup.
+Schedule::command('oms:check-late-orders')->everyTenMinutes()->timezone('Asia/Jakarta');
 
 // Audit transaksi (Epic N, OPS-1402) — harian dini hari untuk hari sebelumnya (perlu ditinjau).
 Schedule::command('oms:audit-transactions')->dailyAt('02:00')->timezone('Asia/Jakarta');

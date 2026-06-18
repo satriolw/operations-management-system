@@ -49,4 +49,17 @@ return [
     // Backlog order berjalan (OPS-1102). Param filter server "belum selesai" BELUM dikonfirmasi
     // NEVIRA → default kosong + guard sisi-klien (completion_date null). Isi saat param resmi ada.
     'active_orders_params' => [],
+
+    // --- Adaptive polling (OPS-109) ---
+    // Cadence efektif per check (menit) — poller boleh dijadwalkan lebih rapat, watermark menjaga
+    // jeda minimum nyata. Configurable, bukan hardcode. 'default' dipakai bila check tak terdaftar.
+    'poll_cadence' => [
+        'late_orders' => (int) env('NEVIRA_POLL_LATE_ORDERS_MIN', 15),
+        'default' => (int) env('NEVIRA_POLL_DEFAULT_MIN', 15),
+    ],
+
+    // Delta polling: nama query-param "ubah sejak" pada /api/transactions. NEVIRA BELUM mengonfirmasi
+    // dukungan filter ini → default null = matikan (tarik jendela penuh, perilaku sekarang). Saat
+    // dikonfirmasi, set mis. 'updated_since' → poller kirim watermark agar payload jauh lebih kecil.
+    'transactions_updated_since_param' => env('NEVIRA_TX_UPDATED_SINCE_PARAM'),
 ];
