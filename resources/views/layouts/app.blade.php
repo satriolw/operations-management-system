@@ -27,6 +27,7 @@
             ['Approval Chain', 'admin.approval-chains.index', 'master_data.edit'],
             ['Kapasitas', 'admin.capacity.index', 'master_data.edit'],
             ['Saldo NEVIRA', 'admin.topup-config.index', 'master_data.edit'],
+            ['SLA Produksi', 'admin.sla-config.index', 'master_data.edit'],
         ],
         'Finance' => [
             ['Dokumen Keuangan', 'finance.documents.index', null],

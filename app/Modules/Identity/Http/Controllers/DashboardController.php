@@ -37,8 +37,8 @@ class DashboardController extends Controller
             'reportsDelivered' => $reportsDelivered,
             'reportsPending' => $reportsPending,
             'outletsVisible' => $user->canAccessAllOutlets() ? Outlet::query()->where('active', true)->count() : count($user->assignedOutletIds()),
-            // Nota terlambat (Epic M) belum dibangun → placeholder 0 (bukan data palsu).
-            'lateOrders' => 0,
+            // Nota terlambat (Epic M, OPS-1305): sinyal LATE_ORDER terbuka, ter-scope.
+            'lateOrders' => (clone $openSignals)->where('type', 'LATE_ORDER')->count(),
             'clean' => ($high + $low + $reportsPending) === 0,
             'today' => $today,
         ]);

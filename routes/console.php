@@ -54,3 +54,6 @@ Schedule::command('oms:score-checklists')->dailyAt('22:30')->timezone('Asia/Jaka
 
 // Leaderboard ternormalisasi (M3-06) — harian (rata-rata bergerak meredam dorongan akhir periode).
 Schedule::command('oms:build-leaderboard')->dailyAt('23:10')->timezone('Asia/Jakarta');
+
+// Nota terlambat / macet (Epic M, OPS-1303) — tiap jam saat jam operasional.
+Schedule::command('oms:check-late-orders')->hourlyAt(15)->timezone('Asia/Jakarta');
