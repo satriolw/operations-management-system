@@ -1,5 +1,6 @@
 <?php
 
+use App\Modules\Discipline\DisciplineServiceProvider;
 use App\Modules\Finance\FinanceServiceProvider;
 use App\Modules\Identity\IdentityServiceProvider;
 use App\Modules\Ingestion\IngestionServiceProvider;
@@ -14,4 +15,5 @@ return [
     ReportingServiceProvider::class,
     SignalsServiceProvider::class,
     FinanceServiceProvider::class,
+    DisciplineServiceProvider::class,
 ];

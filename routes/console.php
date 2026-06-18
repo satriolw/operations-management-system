@@ -41,3 +41,6 @@ Schedule::command('oms:attribute-balance-cost')->monthlyOn(1, '04:00')->timezone
 
 // Retensi lampiran bukti dokumen keuangan (M2-06, selaras OPS-705) — bulanan dini hari.
 Schedule::command('oms:purge-finance-attachments')->monthlyOn(1, '03:30')->timezone('Asia/Jakarta');
+
+// Retensi foto checklist crew (M3-02, data sensitif) — bulanan dini hari.
+Schedule::command('oms:purge-checklist-photos')->monthlyOn(1, '03:45')->timezone('Asia/Jakarta');
