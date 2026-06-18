@@ -5,6 +5,9 @@ use App\Modules\Admin\Http\Controllers\AuditConfigController;
 use App\Modules\Admin\Http\Controllers\CapacityController;
 use App\Modules\Admin\Http\Controllers\ChecklistTemplateController;
 use App\Modules\Admin\Http\Controllers\DeliveryConfigController;
+use App\Modules\Admin\Http\Controllers\DeliveryTargetController;
+use App\Modules\Admin\Http\Controllers\InvestorController;
+use App\Modules\Admin\Http\Controllers\WhatsappAccountController;
 use App\Modules\Admin\Http\Controllers\OutletController;
 use App\Modules\Admin\Http\Controllers\RoleLevelController;
 use App\Modules\Admin\Http\Controllers\SlaConfigController;
@@ -68,6 +71,16 @@ Route::middleware(['web', 'auth', 'can:'.Permissions::EDIT_MASTER_DATA])
         // OPS-804 · Akun WhatsApp & Target Pengiriman
         Route::get('delivery', [DeliveryConfigController::class, 'index'])->name('delivery.index');
         Route::put('delivery-targets/{target}/mode', [DeliveryConfigController::class, 'updateMode'])->name('delivery.mode');
+        // OPS-804 · CRUD akun WhatsApp + target + investor (master data)
+        Route::post('whatsapp-accounts', [WhatsappAccountController::class, 'store'])->name('whatsapp-accounts.store');
+        Route::put('whatsapp-accounts/{whatsappAccount}', [WhatsappAccountController::class, 'update'])->name('whatsapp-accounts.update');
+        Route::delete('whatsapp-accounts/{whatsappAccount}', [WhatsappAccountController::class, 'destroy'])->name('whatsapp-accounts.destroy');
+        Route::post('delivery-targets', [DeliveryTargetController::class, 'store'])->name('delivery-targets.store');
+        Route::put('delivery-targets/{target}', [DeliveryTargetController::class, 'update'])->name('delivery-targets.update');
+        Route::delete('delivery-targets/{target}', [DeliveryTargetController::class, 'destroy'])->name('delivery-targets.destroy');
+        Route::post('investors', [InvestorController::class, 'store'])->name('investors.store');
+        Route::put('investors/{investor}', [InvestorController::class, 'update'])->name('investors.update');
+        Route::delete('investors/{investor}', [InvestorController::class, 'destroy'])->name('investors.destroy');
 
         // OPS-802 · User & Role
         Route::get('users', [UserController::class, 'index'])->name('users.index');

@@ -43,8 +43,10 @@ it('menampilkan akun & target; kredensial TERSEMBUNYI, nomor ter-mask', function
         ->assertSee('Target Pengiriman')
         ->assertSee('LW Kemang')
         ->assertSee('Tertutup')                          // kredensial label
-        ->assertDontSee('secret://wa/RAHASIA-XYZ')        // ref TIDAK bocor
-        ->assertDontSee('6281234567890');                 // nomor penuh TIDAK tampil (ter-mask)
+        ->assertSee('+628123-•••-7890', false)           // kartu display: nomor ter-mask
+        ->assertDontSee('secret://wa/RAHASIA-XYZ');       // SECRET ref TIDAK bocor (aturan emas #7)
+    // Catatan: form edit CRUD (OPS-804) menampilkan nomor pengirim bisnis utk disunting admin —
+    // itu BUKAN secret (credentials_ref-lah secret, tetap tertutup + hidden serialisasi).
 });
 
 it('STATE lost: banner muncul saat ada akun lost', function () {

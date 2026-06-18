@@ -3,6 +3,8 @@
 namespace App\Modules\Admin\Http\Controllers;
 
 use App\Models\DeliveryTarget;
+use App\Models\Investor;
+use App\Models\Outlet;
 use App\Models\WhatsappAccount;
 use App\Modules\Admin\Http\Requests\UpdateTargetModeRequest;
 use Illuminate\Http\RedirectResponse;
@@ -23,6 +25,8 @@ class DeliveryConfigController extends Controller
         return view('admin.delivery.index', [
             'accounts' => $accounts,
             'targets' => $targets,
+            'investors' => Investor::query()->with('outlet')->orderBy('name')->get(),
+            'outlets' => Outlet::query()->orderBy('name')->get(['id_outlet','name']),
             'hasLost' => $accounts->contains(fn (WhatsappAccount $a) => $a->isLost()),
             'modes' => [
                 'hybrid' => ['name' => 'Hybrid', 'desc' => 'Konfirmasi manual oleh Head Store. Selalu tersedia.', 'oba' => false],
