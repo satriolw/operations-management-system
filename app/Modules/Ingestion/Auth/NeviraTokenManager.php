@@ -98,7 +98,7 @@ final class NeviraTokenManager implements AccessTokenProvider
             ->acceptJson()
             ->timeout((int) config('nevira.timeout', 30))
             ->post((string) config('nevira.login_path', '/api/login'), [
-                'username' => $username,
+                (string) config('nevira.login_identity_field', 'username') => $username,
                 'password' => $password,
             ]);
 
