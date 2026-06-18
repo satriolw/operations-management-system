@@ -61,4 +61,13 @@ interface TransactionSource
      * @return Collection<int, array<string, mixed>>
      */
     public function merchantCostHistory(DateRange $range): Collection;
+
+    /**
+     * Semua transaksi satu outlet pada rentang — sumber audit anomali (Epic N, OPS-1401): promos[],
+     * payments[], services[].price vs price-list, quantity vs actual_quantity, customer deposit.
+     * Semua halaman dikumpulkan; record mentah (parsing di domain). Reuse poller, anti-corruption.
+     *
+     * @return Collection<int, array<string, mixed>>
+     */
+    public function dailyTransactions(int $outletId, DateRange $range): Collection;
 }

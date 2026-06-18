@@ -1,6 +1,7 @@
 <?php
 
 use App\Modules\Admin\Http\Controllers\ApprovalChainController;
+use App\Modules\Admin\Http\Controllers\AuditConfigController;
 use App\Modules\Admin\Http\Controllers\CapacityController;
 use App\Modules\Admin\Http\Controllers\ChecklistTemplateController;
 use App\Modules\Admin\Http\Controllers\DeliveryConfigController;
@@ -97,6 +98,10 @@ Route::middleware(['web', 'auth', 'can:'.Permissions::EDIT_MASTER_DATA])
         // OPS-1203 · Master data kalender pencairan + ambang saldo NEVIRA (Epic L)
         Route::get('topup-config', [TopupConfigController::class, 'index'])->name('topup-config.index');
         Route::put('topup-config', [TopupConfigController::class, 'update'])->name('topup-config.update');
+
+        // Epic N · Ambang audit transaksi per outlet (OPS-1402..1406)
+        Route::get('audit-config', [AuditConfigController::class, 'index'])->name('audit-config.index');
+        Route::put('outlets/{outlet}/audit-config', [AuditConfigController::class, 'update'])->name('audit-config.update');
 
         // OPS-1302 · Master data SLA produksi per outlet (Epic M) → dikonsumsi OPS-1303
         Route::get('sla-config', [SlaConfigController::class, 'index'])->name('sla-config.index');

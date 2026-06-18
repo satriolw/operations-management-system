@@ -123,6 +123,16 @@ final class NeviraApiSource implements TransactionSource
         ], 'history');
     }
 
+    public function dailyTransactions(int $outletId, DateRange $range): Collection
+    {
+        // Semua transaksi rentang (Epic N audit). Reuse paginasi; record mentah (no PII di domain).
+        return $this->collectPages('/api/transactions', [
+            'id_outlet' => $outletId,
+            'start_date' => $range->startDate(),
+            'end_date' => $range->endDate(),
+        ]);
+    }
+
     /**
      * Ikuti paginasi Laravel NEVIRA sampai habis (next_page_url null / current_page ≥ last_page).
      * $dataKey = kunci array baris ('data' default; 'history' untuk merchant_balance).

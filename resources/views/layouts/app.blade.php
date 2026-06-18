@@ -28,6 +28,7 @@
             ['Kapasitas', 'admin.capacity.index', 'master_data.edit'],
             ['Saldo NEVIRA', 'admin.topup-config.index', 'master_data.edit'],
             ['SLA Produksi', 'admin.sla-config.index', 'master_data.edit'],
+            ['Audit Transaksi', 'admin.audit-config.index', 'master_data.edit'],
         ],
         'Finance' => [
             ['Dokumen Keuangan', 'finance.documents.index', null],
