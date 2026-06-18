@@ -1,6 +1,7 @@
-@extends('layouts.admin')
+@extends('layouts.app')
 
 @section('title', 'Kalender Pencairan Saldo NEVIRA')
+@section('heading', 'Kalender Pencairan Saldo')
 @section('styles')<link href="{{ asset('css/oms-admin.css') }}" rel="stylesheet">
 <style>
     .tc-wrap{max-width:760px;margin:0 auto;padding:28px 24px;font-family:"Plus Jakarta Sans",system-ui,sans-serif;}
@@ -20,7 +21,7 @@
     .hint{font-size:11.5px;color:#8B93A1;margin:6px 0 0;}
 </style>@endsection
 
-@section('body')
+@section('content')
 @php $days = $config->weekdays(); @endphp
 <div class="tc-wrap">
     <h1 class="tc-h">Kalender Pencairan Saldo NEVIRA</h1>

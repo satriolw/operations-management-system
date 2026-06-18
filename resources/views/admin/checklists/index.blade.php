@@ -1,6 +1,7 @@
-@extends('layouts.admin')
+@extends('layouts.app')
 
 @section('title', 'Checklist Operasional')
+@section('heading', 'Checklist Operasional')
 @section('styles')<link href="{{ asset('css/oms-admin.css') }}" rel="stylesheet">
 <style>
     .cl-wrap{max-width:920px;margin:0 auto;padding:28px 24px;font-family:"Plus Jakarta Sans",system-ui,sans-serif;}
@@ -21,7 +22,7 @@
     label.chk{font-size:12.5px;display:flex;gap:5px;align-items:center;}
 </style>@endsection
 
-@section('body')
+@section('content')
 <div class="cl-wrap">
     <h1 class="cl-h">Checklist Operasional</h1>
     <p class="cl-sub">Template per grup (semua outlet) atau khusus outlet. Item ber-foto wajib bukti kamera in-app (anti-palsu).</p>

@@ -1,6 +1,7 @@
-@extends('layouts.admin')
+@extends('layouts.app')
 
 @section('title', 'Dokumen '.($doc->doc_number ?? $doc->id))
+@section('heading', 'Dokumen Keuangan')
 @section('styles')<link href="{{ asset('css/oms-admin.css') }}" rel="stylesheet">
 <style>
     .ds-wrap{max-width:840px;margin:0 auto;padding:28px 24px;font-family:"Plus Jakarta Sans",system-ui,sans-serif;}
@@ -15,7 +16,7 @@
     a{color:#2C6FE0;text-decoration:none;}
 </style>@endsection
 
-@section('body')
+@section('content')
 <div class="ds-wrap">
     <a href="{{ route('finance.documents.index') }}">← Daftar</a>
     <h1 class="ds-h" style="margin-top:8px">{{ $doc->doc_number ?? '(belum bernomor)' }}</h1>

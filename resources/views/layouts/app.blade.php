@@ -7,8 +7,10 @@
     <title>@yield('title', 'OMS') · Less Worry</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-    <link href="{{ asset('css/oms-app.css') }}" rel="stylesheet">
+    {{-- CSS halaman dimuat DULU; oms-app.css (chrome shell) TERAKHIR agar selektor shell
+         (.app/.rail/.topbar/.scroll) menang atas CSS lama (oms-admin/users/wa) — koherensi UX. --}}
     @yield('styles')
+    <link href="{{ asset('css/oms-app.css') }}" rel="stylesheet">
 </head>
 <body>
 @php
@@ -74,6 +76,7 @@
             <span class="topbar__title">@yield('heading', 'Dashboard')</span>
             <span class="topbar__sub">@yield('subheading', '')</span>
             <span class="topbar__spacer"></span>
+            @hasSection('actions')<div class="topbar__actions">@yield('actions')</div>@endif
             <span class="chip"><span class="dot"></span> NEVIRA tersambung</span>
         </header>
         <div class="scroll">
