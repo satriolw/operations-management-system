@@ -15,6 +15,14 @@ use Illuminate\View\View;
  */
 class OutletController extends Controller
 {
+    /** Daftar outlet (OPS-806) — index sederhana agar shell bisa navigasi sebelum layar edit OPS-803. */
+    public function index(): View
+    {
+        return view('admin.outlets.index', [
+            'outlets' => Outlet::query()->orderBy('name')->get(),
+        ]);
+    }
+
     public function edit(Outlet $outlet): View
     {
         $outlet->load(['checkpoints', 'operatingHours', 'holidays']);
