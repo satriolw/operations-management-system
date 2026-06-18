@@ -18,7 +18,7 @@
     .dlv:last-child{border-bottom:none;}
     .st{font-size:11px;font-weight:700;border-radius:6px;padding:2px 8px;}
     .st.confirmed_sent,.st.sent{background:#E7FFDB;color:#1B5E20;}
-    .st.awaiting_confirmation{background:#FFF1E0;color:#9A5B00;}
+    .st.awaiting_confirmation,.st.awaiting_approval{background:#FFF1E0;color:#9A5B00;}
     .st.failed{background:#FDE7E7;color:#A1281B;}
     .spacer{flex:1;}
     .ok{background:#F2FBED;border:1px solid #D6EFCB;color:#1B5E20;border-radius:8px;padding:8px 12px;margin-bottom:14px;font-size:13px;}
@@ -63,6 +63,13 @@
                     <form method="POST" action="{{ route('deliveries.confirm', $d) }}" onsubmit="return confirm('Tandai laporan ini sudah dikirim ke investor?')">
                         @csrf @method('PUT')
                         <button class="btn" type="submit">Sudah saya kirim</button>
+                    </form>
+                @endif
+                {{-- OPS-304: draft assisted menunggu persetujuan → app kirim via Cloud API --}}
+                @if ($canSend && $d->channel === 'cloud_api' && $d->isAwaitingApproval())
+                    <form method="POST" action="{{ route('deliveries.approve-send', $d) }}" onsubmit="return confirm('Setujui & kirim laporan ini ke investor via WhatsApp?')">
+                        @csrf @method('PUT')
+                        <button class="btn" type="submit">Setujui &amp; Kirim</button>
                     </form>
                 @endif
             </div>
