@@ -23,7 +23,9 @@ class ChecklistRun extends Model
 
     protected $fillable = ['id_outlet', 'template_id', 'run_date', 'status', 'score'];
 
-    protected $casts = ['run_date' => 'date', 'score' => 'decimal:2'];
+    // run_date TANPA cast 'date': cast date menserialisasi ke datetime → memecah firstOrCreate/where
+    // idempotensi (string '2026-06-18' vs '2026-06-18 00:00:00'). Simpan apa adanya (Y-m-d).
+    protected $casts = ['score' => 'decimal:2'];
 
     public function template(): BelongsTo
     {

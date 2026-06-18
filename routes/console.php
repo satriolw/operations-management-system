@@ -44,3 +44,7 @@ Schedule::command('oms:purge-finance-attachments')->monthlyOn(1, '03:30')->timez
 
 // Retensi foto checklist crew (M3-02, data sensitif) — bulanan dini hari.
 Schedule::command('oms:purge-checklist-photos')->monthlyOn(1, '03:45')->timezone('Asia/Jakarta');
+
+// Checklist harian (M3-03): buat run pagi, evaluasi deadline (reminder + eskalasi) berkala.
+Schedule::command('oms:create-checklist-runs')->dailyAt('05:00')->timezone('Asia/Jakarta');
+Schedule::command('oms:checklist-deadlines')->hourlyAt(5)->timezone('Asia/Jakarta');

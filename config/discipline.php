@@ -16,6 +16,10 @@ return [
     // Retensi foto crew (hari) — data sensitif; purge terjadwal (selaras OPS-705/M2-06).
     'photo_retention_days' => (int) env('DISCIPLINE_PHOTO_RETENTION_DAYS', 365),
 
+    // Deadline checklist harian (M3-03), jam WIB: reminder lalu eskalasi bila belum lengkap.
+    'reminder_hour' => (int) env('DISCIPLINE_REMINDER_HOUR', 12),
+    'escalation_hour' => (int) env('DISCIPLINE_ESCALATION_HOUR', 20),
+
     // Bobot metrik leaderboard ternormalisasi (M3-05) — setara default, configurable.
     'leaderboard_weights' => [
         'growth' => (float) env('DISCIPLINE_W_GROWTH', 1),
