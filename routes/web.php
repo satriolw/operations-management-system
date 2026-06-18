@@ -135,6 +135,11 @@ Route::middleware(['web', 'auth', 'can:'.Permissions::EDIT_MASTER_DATA])
         Route::get('capacity', [CapacityController::class, 'index'])->name('capacity.index');
         Route::put('outlets/{outlet}/capacity', [CapacityController::class, 'update'])->name('capacity.update');
 
+        // OPS-901 · Kelola template laporan (daftar master + override, buat, hapus)
+        Route::get('templates', [\App\Modules\Admin\Http\Controllers\ReportTemplateController::class, 'index'])->name('templates.index');
+        Route::post('templates', [\App\Modules\Admin\Http\Controllers\ReportTemplateController::class, 'store'])->name('templates.store');
+        Route::delete('templates/{template}', [\App\Modules\Admin\Http\Controllers\ReportTemplateController::class, 'destroy'])->name('templates.destroy');
+
         // OPS-902 · Template Builder drag & drop (draft via OPS-1004; R7 guard)
         Route::get('templates/{template}/builder', [TemplateBuilderController::class, 'edit'])->name('templates.builder');
         Route::post('templates/{template}/draft', [TemplateBuilderController::class, 'saveDraft'])->name('templates.draft');

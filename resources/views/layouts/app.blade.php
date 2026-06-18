@@ -28,6 +28,8 @@
             ['Outlet', 'admin.outlets.index', 'master_data.edit'],
             ['User & Role', 'admin.users.index', 'master_data.edit'],
             ['WhatsApp & Target', 'admin.delivery.index', 'master_data.edit'],
+            ['Template Laporan', 'admin.templates.index', 'master_data.edit'],
+            ['Peta Role → Level', 'admin.role-levels.index', 'master_data.edit'],
             ['Approval Chain', 'admin.approval-chains.index', 'master_data.edit'],
             ['Kapasitas', 'admin.capacity.index', 'master_data.edit'],
             ['Saldo NEVIRA', 'admin.topup-config.index', 'master_data.edit'],
