@@ -14,7 +14,7 @@
     th{font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:#8B93A1;}
     .st{font-size:11px;font-weight:700;border-radius:6px;padding:2px 8px;}
     .st.confirmed_sent,.st.sent{background:#E7FFDB;color:#1B5E20;}
-    .st.awaiting_confirmation{background:#FFF1E0;color:#9A5B00;}
+    .st.awaiting_confirmation,.st.awaiting_approval{background:#FFF1E0;color:#9A5B00;}
     .st.failed{background:#FDE7E7;color:#A1281B;}
     a.lnk{color:#2C6FE0;text-decoration:none;}
     .ok{background:#F2FBED;border:1px solid #D6EFCB;color:#1B5E20;border-radius:8px;padding:8px 12px;margin-bottom:14px;font-size:13px;}

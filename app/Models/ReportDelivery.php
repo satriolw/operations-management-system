@@ -16,6 +16,9 @@ class ReportDelivery extends Model
     public const CONFIRMED_SENT = 'confirmed_sent';               // Head Store tekan "Sudah saya kirim"
     public const SENT = 'sent';                                  // Cloud API terkirim (Opsi A)
     public const FAILED = 'failed';
+    // Status assisted (OPS-304): draft disiapkan, MENUNGGU Head Store tekan "Setujui & Kirim"
+    // (app yang kirim via Cloud API). Berbeda dari hybrid (paste manual).
+    public const AWAITING_APPROVAL = 'awaiting_approval';
 
     protected $fillable = [
         'report_run_id', 'id_outlet', 'channel', 'target',
@@ -34,6 +37,12 @@ class ReportDelivery extends Model
     public function isAwaitingConfirmation(): bool
     {
         return $this->status === self::AWAITING_CONFIRMATION;
+    }
+
+    /** Draft assisted menunggu "Setujui & Kirim" Head Store (OPS-304). */
+    public function isAwaitingApproval(): bool
+    {
+        return $this->status === self::AWAITING_APPROVAL;
     }
 
     /** Benar-benar terverifikasi sampai investor (dipakai watchdog OPS-704, bukan status draft). */

@@ -35,6 +35,11 @@ Route::middleware(['web', 'auth'])
     ->put('deliveries/{delivery}/confirm', [HybridConfirmationController::class, 'confirm'])
     ->name('deliveries.confirm');
 
+// OPS-304 · Head Store "Setujui & Kirim" (assisted) → app kirim via Cloud API. Gate + scoping di controller.
+Route::middleware(['web', 'auth'])
+    ->put('deliveries/{delivery}/approve-send', [\App\Modules\Delivery\Http\Controllers\AssistedApprovalController::class, 'approveSend'])
+    ->name('deliveries.approve-send');
+
 // OPS-606 · tinjau sinyal (gate REVIEW_SIGNALS + scoping + reviewer≠subjek di request/controller).
 Route::middleware(['web', 'auth'])
     ->post('signals/{signal}/review', [SignalReviewController::class, 'review'])

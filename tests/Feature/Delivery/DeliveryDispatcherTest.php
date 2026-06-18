@@ -43,11 +43,21 @@ it('assisted tapi OBA belum siap → effectiveMode hybrid → kirim hybrid', fun
     expect($d->channel)->toBe('hybrid');
 });
 
-it('assisted + OBA siap → Cloud API gagal (OBA pending) → fallback hybrid + alert', function () {
+it('assisted + OBA siap → draft awaiting_approval (TIDAK auto-kirim, OPS-304)', function () {
+    $t = target('assisted', WhatsappAccount::factory()->create()); // oba active default → obaReady
+
+    $d = app(DeliveryDispatcher::class)->dispatch($this->run, $t);
+
+    // App TIDAK kirim sendiri; tunggu Head Store "Setujui & Kirim".
+    expect($d->channel)->toBe('cloud_api')
+        ->and($d->status)->toBe('awaiting_approval');
+});
+
+it('full_auto + OBA siap → Cloud API gagal (disabled) → fallback hybrid + alert', function () {
     $logged = '';
     Log::listen(function ($e) use (&$logged) { $logged .= ' '.$e->message; });
 
-    $t = target('assisted', WhatsappAccount::factory()->create()); // oba active default → obaReady
+    $t = target('full_auto', WhatsappAccount::factory()->create()); // oba active; whatsapp.enabled default false
 
     $d = app(DeliveryDispatcher::class)->dispatch($this->run, $t);
 

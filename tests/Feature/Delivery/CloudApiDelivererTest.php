@@ -34,10 +34,10 @@ beforeEach(function () {
     ]);
 });
 
-function obaTarget(?string $groupId = 'GROUP-1'): DeliveryTarget
+function obaTarget(?string $groupId = 'GROUP-1', string $mode = 'assisted'): DeliveryTarget
 {
     return DeliveryTarget::factory()->create([
-        'id_outlet' => 120, 'investor_label' => 'Pak Andre', 'deliver_mode' => 'assisted',
+        'id_outlet' => 120, 'investor_label' => 'Pak Andre', 'deliver_mode' => $mode,
         'group_id' => $groupId,
         'whatsapp_account_id' => WhatsappAccount::factory()->create()->id, // oba active default
     ]);
@@ -115,10 +115,10 @@ it('kredensial tak ter-resolve (tanpa default_token & map) → DeliveryFailed', 
     Http::assertNothingSent();
 });
 
-it('end-to-end via DeliveryDispatcher: assisted + OBA + sandbox → terkirim cloud_api', function () {
+it('end-to-end via DeliveryDispatcher: full_auto + OBA + sandbox → terkirim cloud_api', function () {
     Http::fake(['graph.facebook.com/*' => Http::response(['messages' => [['id' => 'wamid.9']]], 200)]);
 
-    $d = app(DeliveryDispatcher::class)->dispatch($this->run, obaTarget());
+    $d = app(DeliveryDispatcher::class)->dispatch($this->run, obaTarget(mode: 'full_auto'));
     expect($d->channel)->toBe('cloud_api')->and($d->status)->toBe('sent');
 });
 
