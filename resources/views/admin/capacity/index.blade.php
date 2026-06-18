@@ -1,6 +1,7 @@
-@extends('layouts.admin')
+@extends('layouts.app')
 
 @section('title', 'Kapasitas Outlet')
+@section('heading', 'Kapasitas Outlet')
 @section('styles')<link href="{{ asset('css/oms-admin.css') }}" rel="stylesheet">
 <style>
     .cap-wrap{max-width:1040px;margin:0 auto;padding:28px 24px;font-family:"Plus Jakarta Sans",system-ui,sans-serif;}
@@ -20,7 +21,7 @@
     .hint{font-size:11.5px;color:#8B93A1;margin:8px 0 0;}
 </style>@endsection
 
-@section('body')
+@section('content')
 <div class="cap-wrap">
     <h1 class="cap-h">Kapasitas Outlet</h1>
     <p class="cap-sub">Effective capacity (kg/jam) diturunkan dari input: <b>override</b> → <b>mesin × throughput</b> → <b>kg/hari ÷ jam shift</b>. Ambang overload per outlet (OPS-1103).</p>

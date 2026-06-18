@@ -1,4 +1,4 @@
-@extends('layouts.admin')
+@extends('layouts.app')
 
 @section('title', 'Edit Outlet — '.$outlet->name)
 @section('styles')<link href="{{ asset('css/oms-admin.css') }}" rel="stylesheet">@endsection
@@ -30,43 +30,18 @@
     $seedHolidays = collect(old('holidays', $outlet->holidays->map(fn ($h) => ['date' => optional($h->holiday_date)->format('Y-m-d'), 'note' => $h->note])->all()));
 @endphp
 
-@section('body')
-<div class="app">
-    <aside class="rail">
-        <div class="rail__brand">
-            <div class="rail__logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.5C12 2.5 5 10 5 15a7 7 0 0 0 14 0c0-5-7-12.5-7-12.5z"/></svg></div>
-            <div><b>Less Worry</b><span>OMS · Apique Group</span></div>
-        </div>
-        <div class="rail__sec">Konfigurasi</div>
-        <nav class="nav">
-            <a href="#" class="on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M8 4v16"/></svg>Outlet</a>
-        </nav>
-        <div class="rail__user">
-            <div class="av">{{ Str::upper(Str::substr(auth()->user()->name ?? 'U', 0, 2)) }}</div>
-            <div><b>{{ auth()->user()->name ?? 'User' }}</b><span>{{ auth()->user()?->getRoleNames()->first() ?? 'staf' }}</span></div>
-        </div>
-    </aside>
+@section('heading', 'Edit Outlet')
+@section('subheading', $outlet->name)
+@section('actions')
+    <a class="btn btn--ghost btn--sm" href="{{ url('/') }}">Batal</a>
+    <button type="submit" form="outletForm" class="btn btn--primary btn--sm">Simpan</button>
+@endsection
 
-    <div class="main">
-        <form method="POST" action="{{ route('admin.outlets.update', $outlet) }}" id="outletForm">
-            @csrf
-            @method('PUT')
-
-            <div class="topbar">
-                <div>
-                    <div class="crumb"><a href="{{ url('/') }}">Outlet</a><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="m9 18 6-6-6-6"/></svg><b>{{ $outlet->name }}</b></div>
-                    <h1>Edit Outlet</h1>
-                </div>
-                <div class="topbar__right">
-                    <a class="btn btn--ghost btn--sm" href="{{ url('/') }}">Batal</a>
-                    <button type="submit" class="btn btn--primary btn--sm">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><path d="M17 21v-8H7v8M7 3v5h8"/></svg>Simpan
-                    </button>
-                </div>
-            </div>
-
-            <div class="scroll">
-                <div class="layout">
+@section('content')
+<form method="POST" action="{{ route('admin.outlets.update', $outlet) }}" id="outletForm">
+    @csrf
+    @method('PUT')
+    <div class="layout">
                     <div class="formcol">
 
                         {{-- Identitas --}}
@@ -205,8 +180,6 @@
                         </div>
                     </div>
                 </div>
-            </div>
-
             <div class="savebar">
                 <span class="status" id="saveStatus">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
@@ -217,9 +190,6 @@
                 <button type="submit" class="btn btn--primary"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><path d="M17 21v-8H7v8M7 3v5h8"/></svg>Simpan perubahan</button>
             </div>
         </form>
-    </div>
-</div>
-
 <div class="toast-wrap" id="toastWrap"></div>
 @endsection
 

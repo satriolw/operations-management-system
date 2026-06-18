@@ -1,4 +1,4 @@
-@extends('layouts.admin')
+@extends('layouts.app')
 
 @section('title', 'User & Role')
 @section('styles')<link href="{{ asset('css/oms-users.css') }}" rel="stylesheet">@endsection
@@ -25,35 +25,12 @@
     ])->values();
 @endphp
 
-@section('body')
-<div class="app">
-    <aside class="rail">
-        <div class="rail__brand">
-            <div class="rail__logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.5C12 2.5 5 10 5 15a7 7 0 0 0 14 0c0-5-7-12.5-7-12.5z"/></svg></div>
-            <div><b>Less Worry</b><span>OMS · Apique Group</span></div>
-        </div>
-        <div class="rail__sec">Konfigurasi</div>
-        <nav class="nav">
-            <a href="#" class="on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>User &amp; Role</a>
-        </nav>
-        <div class="rail__user">
-            <div class="av">{{ $initials(auth()->user()->name ?? 'U') }}</div>
-            <div><b>{{ auth()->user()->name ?? 'User' }}</b><span>{{ auth()->user()?->getRoleNames()->first() ?? 'staf' }}</span></div>
-        </div>
-    </aside>
+@section('heading', 'User & Role')
+@section('actions')
+    <button type="button" class="btn btn--primary btn--sm" onclick="openInvite()">Undang user</button>
+@endsection
 
-    <div class="main">
-        <div class="topbar">
-            <div>
-                <div class="crumb"><span>Konfigurasi</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="m9 18 6-6-6-6"/></svg><b>User &amp; Role</b></div>
-                <h1>User &amp; Role</h1>
-            </div>
-            <div class="topbar__right">
-                <button type="button" class="btn btn--primary btn--sm" onclick="openInvite()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M19 8v6M22 11h-6"/></svg>Undang user</button>
-            </div>
-        </div>
-
-        <div class="scroll">
+@section('content')
             <div class="inner">
                 @if (session('status'))
                     <div class="errbanner on" style="background:var(--good-bg);border-color:var(--good-bd)">
@@ -123,9 +100,6 @@
                     </table>
                 </div>
             </div>
-        </div>
-    </div>
-</div>
 
 {{-- MODAL invite/edit --}}
 <div class="overlay" id="overlay">

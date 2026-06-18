@@ -68,6 +68,7 @@ a{color:inherit;text-decoration:none}
 .topbar{display:flex;align-items:center;gap:10px;background:var(--surface);border-bottom:1px solid var(--border);padding:13px 24px;}
 .topbar__title{font-weight:800;font-size:15px;} .topbar__sub{color:var(--ink-3);font-size:12.5px;}
 .topbar__spacer{flex:1;}
+.topbar__actions{display:flex;gap:8px;align-items:center;}
 .chip{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--good-bd);background:var(--good-bg);color:var(--good);
   border-radius:20px;padding:3px 10px;font-size:11.5px;font-weight:650;}
 .chip .dot{width:7px;height:7px;border-radius:50%;background:currentColor;}

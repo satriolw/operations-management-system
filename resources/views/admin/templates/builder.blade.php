@@ -1,6 +1,7 @@
-@extends('layouts.admin')
+@extends('layouts.app')
 
 @section('title', 'Template Builder')
+@section('heading', 'Template Builder')
 @section('styles')<link href="{{ asset('css/oms-builder.css') }}" rel="stylesheet">
 <style>
     .bwrap{display:grid;grid-template-columns:230px minmax(0,1fr) 360px;gap:16px;padding:20px 24px;font-family:"Plus Jakarta Sans",system-ui,sans-serif;}
@@ -20,7 +21,7 @@
     .meta{font-size:12px;color:#555E6C;margin-left:auto;}
 </style>@endsection
 
-@section('body')
+@section('content')
 <div class="toolbar">
     <b>Template Builder · {{ $template->name }} <span class="meta">scope: {{ $template->scope }}</span></b>
     <button type="button" class="btn" onclick="saveDraft()">Simpan draft</button>

@@ -1,6 +1,7 @@
-@extends('layouts.admin')
+@extends('layouts.app')
 
 @section('title', 'Rantai Approval Dokumen')
+@section('heading', 'Rantai Approval')
 @section('styles')<link href="{{ asset('css/oms-admin.css') }}" rel="stylesheet">
 <style>
     .ac-wrap{max-width:960px;margin:0 auto;padding:28px 24px;font-family:"Plus Jakarta Sans",system-ui,sans-serif;}
@@ -18,7 +19,7 @@
     .badge{font-size:11px;font-weight:700;border-radius:6px;padding:2px 7px;background:#EBF2FE;color:#1A4BA6;}
 </style>@endsection
 
-@section('body')
+@section('content')
 <div class="ac-wrap">
     <h1 class="ac-h">Rantai Approval Dokumen Keuangan</h1>
     <p class="ac-sub">Rantai dipilih per <b>band nominal</b> (LOW &lt;Rp1jt, HIGH ≥Rp1jt) × scope. Tiap level: role <b>atau</b> user. <span class="badge">doc_type kosong = semua jenis</span></p>

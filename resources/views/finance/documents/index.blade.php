@@ -1,6 +1,7 @@
-@extends('layouts.admin')
+@extends('layouts.app')
 
 @section('title', 'Dokumen Keuangan')
+@section('heading', 'Dokumen Keuangan')
 @section('styles')<link href="{{ asset('css/oms-admin.css') }}" rel="stylesheet">
 <style>
     .fd-wrap{max-width:1080px;margin:0 auto;padding:28px 24px;font-family:"Plus Jakarta Sans",system-ui,sans-serif;}
@@ -17,7 +18,7 @@
     a{color:#2C6FE0;text-decoration:none;}
 </style>@endsection
 
-@section('body')
+@section('content')
 <div class="fd-wrap">
     <h1 class="fd-h">Dokumen Keuangan</h1>
 

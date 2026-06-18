@@ -1,6 +1,7 @@
-@extends('layouts.admin')
+@extends('layouts.app')
 
 @section('title', 'Leaderboard '.$period)
+@section('heading', 'Leaderboard')
 @section('styles')<link href="{{ asset('css/oms-admin.css') }}" rel="stylesheet">
 <style>
     .lb-wrap{max-width:760px;margin:0 auto;padding:28px 24px;font-family:"Plus Jakarta Sans",system-ui,sans-serif;}
@@ -14,7 +15,7 @@
     .muted{color:#8B93A1;font-size:11.5px;}
 </style>@endsection
 
-@section('body')
+@section('content')
 <div class="lb-wrap">
     <h1 class="lb-h">Leaderboard · {{ $period }}</h1>
     <p class="lb-sub">Skor ternormalisasi (growth %, revenue per kapasitas, kepatuhan) — bukan revenue absolut. Rata-rata bergerak meredam dorongan akhir periode.</p>

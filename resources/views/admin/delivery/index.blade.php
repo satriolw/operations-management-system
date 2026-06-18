@@ -1,4 +1,4 @@
-@extends('layouts.admin')
+@extends('layouts.app')
 
 @section('title', 'Akun WhatsApp & Target')
 @section('styles')<link href="{{ asset('css/oms-wa.css') }}" rel="stylesheet">@endsection
@@ -18,32 +18,9 @@
     $initials = fn ($s) => Str::upper(Str::substr(collect(explode(' ', trim($s)))->map(fn ($w) => $w[0] ?? '')->take(2)->implode(''), 0, 2));
 @endphp
 
-@section('body')
-<div class="app">
-    <aside class="rail">
-        <div class="rail__brand">
-            <div class="rail__logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.5C12 2.5 5 10 5 15a7 7 0 0 0 14 0c0-5-7-12.5-7-12.5z"/></svg></div>
-            <div><b>Less Worry</b><span>OMS · Apique Group</span></div>
-        </div>
-        <div class="rail__sec">Konfigurasi</div>
-        <nav class="nav">
-            <a href="#" class="on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M.057 24l1.687-6.163a11.867 11.867 0 01-1.587-5.946C.16 5.335 5.495 0 12.05 0a11.82 11.82 0 018.413 3.488 11.82 11.82 0 013.48 8.414c-.003 6.557-5.338 11.892-11.893 11.892a11.9 11.9 0 01-5.688-1.448L.057 24z"/></svg>Akun WhatsApp</a>
-        </nav>
-        <div class="rail__user">
-            <div class="av">{{ $initials(auth()->user()->name ?? 'U') }}</div>
-            <div><b>{{ auth()->user()->name ?? 'User' }}</b><span>{{ auth()->user()?->getRoleNames()->first() ?? 'staf' }}</span></div>
-        </div>
-    </aside>
+@section('heading', 'WhatsApp & Target')
 
-    <div class="main">
-        <div class="topbar">
-            <div>
-                <div class="crumb"><span>Konfigurasi</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="m9 18 6-6-6-6"/></svg><b>Akun WhatsApp &amp; Target</b></div>
-                <h1>Akun WhatsApp &amp; Target Pengiriman</h1>
-            </div>
-        </div>
-
-        <div class="scroll">
+@section('content')
             <div class="inner">
 
                 @if (session('status'))
@@ -189,9 +166,6 @@
                     </table>
                 </div>
             </div>
-        </div>
-    </div>
-</div>
 <div class="toast-wrap" id="toastWrap"></div>
 @endsection
 
