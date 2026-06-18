@@ -38,6 +38,13 @@ Route::middleware(['web', 'auth'])->prefix('finance')->name('finance.')->group(f
     Route::get('documents/{document}/attachments/{attachment}/download', [\App\Modules\Finance\Http\Controllers\AttachmentController::class, 'download'])->name('documents.attachments.download');
 });
 
+// M3-02 · submission checklist + capture token (anti-palsu; scoping per-outlet di controller).
+Route::middleware(['web', 'auth'])->prefix('discipline')->name('discipline.')->group(function () {
+    Route::post('runs/{run}/items/{item}/capture-token', [\App\Modules\Discipline\Http\Controllers\ChecklistSubmissionController::class, 'captureToken'])->name('capture-token');
+    Route::post('runs/{run}/items/{item}/submit', [\App\Modules\Discipline\Http\Controllers\ChecklistSubmissionController::class, 'submit'])->name('submit');
+    Route::get('runs/{run}/submissions/{submission}/photo', [\App\Modules\Discipline\Http\Controllers\ChecklistSubmissionController::class, 'photo'])->name('photo');
+});
+
 // Admin — master data. Gate aksi sensitif: master_data.edit (OPS-801).
 Route::middleware(['web', 'auth', 'can:'.Permissions::EDIT_MASTER_DATA])
     ->prefix('admin')->name('admin.')->group(function () {
