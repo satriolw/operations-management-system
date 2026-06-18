@@ -51,3 +51,6 @@ Schedule::command('oms:checklist-deadlines')->hourlyAt(5)->timezone('Asia/Jakart
 
 // Skor kepatuhan checklist (M3-04) — akhir hari setelah jendela deadline.
 Schedule::command('oms:score-checklists')->dailyAt('22:30')->timezone('Asia/Jakarta');
+
+// Leaderboard ternormalisasi (M3-06) — harian (rata-rata bergerak meredam dorongan akhir periode).
+Schedule::command('oms:build-leaderboard')->dailyAt('23:10')->timezone('Asia/Jakarta');

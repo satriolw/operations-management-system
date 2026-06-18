@@ -43,6 +43,9 @@ Route::middleware(['web', 'auth'])->prefix('discipline')->name('discipline.')->g
     Route::post('runs/{run}/items/{item}/capture-token', [\App\Modules\Discipline\Http\Controllers\ChecklistSubmissionController::class, 'captureToken'])->name('capture-token');
     Route::post('runs/{run}/items/{item}/submit', [\App\Modules\Discipline\Http\Controllers\ChecklistSubmissionController::class, 'submit'])->name('submit');
     Route::get('runs/{run}/submissions/{submission}/photo', [\App\Modules\Discipline\Http\Controllers\ChecklistSubmissionController::class, 'photo'])->name('photo');
+
+    // M3-06 · leaderboard ternormalisasi (scoping per-outlet di controller)
+    Route::get('leaderboard', [\App\Modules\Discipline\Http\Controllers\LeaderboardController::class, 'index'])->name('leaderboard');
 });
 
 // Admin — master data. Gate aksi sensitif: master_data.edit (OPS-801).
