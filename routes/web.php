@@ -40,6 +40,17 @@ Route::middleware(['web', 'auth'])
     ->post('signals/{signal}/review', [SignalReviewController::class, 'review'])
     ->name('signals.review');
 
+// OPS-606 · layar triase sinyal (read; gate REVIEW_SIGNALS + scoping per-outlet di controller).
+Route::middleware(['web', 'auth', 'can:'.Permissions::REVIEW_SIGNALS])
+    ->get('signals', [SignalReviewController::class, 'index'])
+    ->name('signals.index');
+
+// OPS-302 · Preview & Kirim Laporan (read + konfirmasi hybrid via deliveries.confirm; scoping di controller).
+Route::middleware(['web', 'auth'])->group(function () {
+    Route::get('reports', [\App\Modules\Reporting\Http\Controllers\ReportController::class, 'index'])->name('reports.index');
+    Route::get('reports/{run}', [\App\Modules\Reporting\Http\Controllers\ReportController::class, 'show'])->name('reports.show');
+});
+
 // M2-07 · daftar/riwayat dokumen keuangan + status tracking (scoping per-outlet di controller).
 Route::middleware(['web', 'auth'])->prefix('finance')->name('finance.')->group(function () {
     Route::get('documents', [\App\Modules\Finance\Http\Controllers\DocumentController::class, 'index'])->name('documents.index');
