@@ -6,6 +6,7 @@ use App\Modules\Admin\Http\Controllers\ChecklistTemplateController;
 use App\Modules\Admin\Http\Controllers\DeliveryConfigController;
 use App\Modules\Admin\Http\Controllers\OutletController;
 use App\Modules\Admin\Http\Controllers\RoleLevelController;
+use App\Modules\Admin\Http\Controllers\SlaConfigController;
 use App\Modules\Admin\Http\Controllers\TopupConfigController;
 use App\Modules\Admin\Http\Controllers\UserController;
 use App\Modules\Templating\Http\Controllers\TemplateBuilderController;
@@ -96,6 +97,10 @@ Route::middleware(['web', 'auth', 'can:'.Permissions::EDIT_MASTER_DATA])
         // OPS-1203 · Master data kalender pencairan + ambang saldo NEVIRA (Epic L)
         Route::get('topup-config', [TopupConfigController::class, 'index'])->name('topup-config.index');
         Route::put('topup-config', [TopupConfigController::class, 'update'])->name('topup-config.update');
+
+        // OPS-1302 · Master data SLA produksi per outlet (Epic M) → dikonsumsi OPS-1303
+        Route::get('sla-config', [SlaConfigController::class, 'index'])->name('sla-config.index');
+        Route::put('outlets/{outlet}/sla-config', [SlaConfigController::class, 'update'])->name('sla-config.update');
 
         // OPS-1101 · Master data kapasitas outlet (Epic K) → dikonsumsi OPS-1103
         Route::get('capacity', [CapacityController::class, 'index'])->name('capacity.index');
