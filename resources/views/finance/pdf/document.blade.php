@@ -81,10 +81,14 @@
                     @if ($doc->doc_type === 'EXPENSE_REPORT')<td class="num">{{ $rp($line->balance) }}</td>@endif
                 </tr>
             @endforeach
-                <tr class="total"><td colspan="5" class="num">TOTAL</td><td class="num">{{ $rp($doc->amount) }}</td>
-                    @if ($doc->doc_type === 'EXPENSE_REPORT')<td></td>@endif</tr>
+                <tr class="total"><td colspan="5" class="num">TOTAL REALISASI</td><td class="num">{{ $rp($doc->amount) }}</td>
+                    @if ($doc->doc_type === 'EXPENSE_REPORT')<td class="num">{{ isset($payload['sisa']) ? $rp($payload['sisa']) : '—' }}</td>@endif</tr>
             </tbody>
         </table>
+        @if ($doc->doc_type === 'EXPENSE_REPORT' && isset($payload['sisa']))
+            <div class="meta"><b>Sisa: {{ $rp($payload['sisa']) }} — {{ $payload['sisa_label'] }}</b>
+                ({{ ($payload['sisa'] ?? 0) < 0 ? 'reimburse ke karyawan' : 'kembali ke perusahaan' }})</div>
+        @endif
         @endif
 
         <div class="sec"><h2>Informasi Pembayaran</h2>

@@ -32,12 +32,16 @@ final class DocumentService
 
         $this->assertCanCreate($requester, $scope, $idOutlet);
 
-        $lines = $this->itemized($data['doc_type']) ? ($data['lines'] ?? []) : [];
+        $lines = $this->itemized($data['doc_type']) ? array_values($data['lines'] ?? []) : [];
         $amount = isset($data['amount'])
             ? (float) $data['amount']
             : array_sum(array_map(fn ($l) => (float) ($l['amount'] ?? 0), $lines));
 
-        return DB::transaction(function () use ($data, $requester, $scope, $idOutlet, $lines, $amount, $date) {
+        // ER = rekonsiliasi CA: hitung running balance TURUNAN (CA − kumulatif) + sisa (CA Lebih/Kurang).
+        $payload = $data['payload'] ?? [];
+        [$lines, $payload] = $this->reconcileExpenseReport($data, $lines, $amount, $payload);
+
+        return DB::transaction(function () use ($data, $requester, $scope, $idOutlet, $lines, $amount, $date, $payload) {
             $doc = new FinancialDocument([
                 'doc_type' => $data['doc_type'],
                 'brand' => $data['brand'],
@@ -53,7 +57,7 @@ final class DocumentService
                 'current_level' => 0,
                 'parent_document_id' => $data['parent_document_id'] ?? null,
                 'nevira_transaction_number' => $data['nevira_transaction_number'] ?? null,
-                'payload_json' => $data['payload'] ?? null,
+                'payload_json' => $payload !== [] ? $payload : null,
             ]);
             $doc->save();
 
@@ -79,6 +83,39 @@ final class DocumentService
     private function itemized(string $docType): bool
     {
         return in_array($docType, self::ITEMIZED, true);
+    }
+
+    /**
+     * ER (System Design §3.1): running balance per baris = saldo CA − realisasi kumulatif (TURUNAN,
+     * bukan input); sisa = CA − total realisasi → negatif "CA Kurang" (reimburse karyawan),
+     * positif "CA Lebih" (kembali ke perusahaan). Non-ER / tanpa parent → tak diubah.
+     *
+     * @return array{0:array<int,array<string,mixed>>,1:array<string,mixed>}
+     */
+    private function reconcileExpenseReport(array $data, array $lines, float $amount, array $payload): array
+    {
+        if ($data['doc_type'] !== 'EXPENSE_REPORT' || empty($data['parent_document_id'])) {
+            return [$lines, $payload];
+        }
+
+        $parent = FinancialDocument::find($data['parent_document_id']);
+        if ($parent === null) {
+            return [$lines, $payload];
+        }
+
+        $ca = (float) $parent->amount;
+        $remaining = $ca;
+        foreach ($lines as $k => $line) {
+            $remaining = round($remaining - (float) ($line['amount'] ?? 0), 2);
+            $lines[$k]['balance'] = $remaining; // override input → turunan deterministik
+        }
+
+        $sisa = round($ca - $amount, 2);
+        $payload['ca_amount'] = $ca;
+        $payload['sisa'] = $sisa;
+        $payload['sisa_label'] = $sisa < 0 ? 'CA Kurang' : 'CA Lebih';
+
+        return [$lines, $payload];
     }
 
     private function assertCanCreate(User $requester, string $scope, ?int $idOutlet): void

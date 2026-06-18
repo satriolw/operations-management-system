@@ -70,6 +70,53 @@ it('Expense Report: parent CA + running balance lines', function () {
         ->and((float) $er->lines()->orderBy('sort_order')->get()->last()->balance)->toBe(-100000.0);
 });
 
+it('ER: running balance TURUNAN (override input) + sisa CA Kurang', function () {
+    $hs = reqUser();
+    $ca = $this->svc->create(['doc_type' => 'CASH_ADVANCE', 'brand' => 'LW', 'id_outlet' => 120, 'title' => 'CA', 'amount' => 1000000], $hs);
+
+    $er = $this->svc->create([
+        'doc_type' => 'EXPENSE_REPORT', 'brand' => 'LW', 'id_outlet' => 120, 'title' => 'Realisasi',
+        'parent_document_id' => $ca->id,
+        'lines' => [
+            ['description' => 'Transport', 'amount' => 300000, 'balance' => 999999], // input balang salah → diabaikan
+            ['description' => 'Konsumsi', 'amount' => 800000, 'balance' => 0],
+        ],
+    ], $hs);
+
+    $lines = $er->lines()->orderBy('sort_order')->get();
+    // running balance = CA(1jt) − kumulatif: 700000, lalu -100000 (override input)
+    expect((float) $lines[0]->balance)->toBe(700000.0)
+        ->and((float) $lines[1]->balance)->toBe(-100000.0)
+        ->and((float) $er->amount)->toBe(1100000.0)
+        ->and((float) $er->payload_json['sisa'])->toBe(-100000.0)
+        ->and($er->payload_json['sisa_label'])->toBe('CA Kurang')
+        ->and((float) $er->payload_json['ca_amount'])->toBe(1000000.0);
+});
+
+it('ER: sisa positif → CA Lebih (kembali ke perusahaan)', function () {
+    $hs = reqUser();
+    $ca = $this->svc->create(['doc_type' => 'CASH_ADVANCE', 'brand' => 'LW', 'id_outlet' => 120, 'title' => 'CA', 'amount' => 1000000], $hs);
+
+    $er = $this->svc->create([
+        'doc_type' => 'EXPENSE_REPORT', 'brand' => 'LW', 'id_outlet' => 120, 'title' => 'Realisasi',
+        'parent_document_id' => $ca->id,
+        'lines' => [['description' => 'Belanja', 'amount' => 600000]],
+    ], $hs);
+
+    expect((float) $er->payload_json['sisa'])->toBe(400000.0)
+        ->and($er->payload_json['sisa_label'])->toBe('CA Lebih');
+});
+
+it('non-ER tak mendapat sisa/running-balance turunan', function () {
+    $hs = reqUser();
+    $pr = $this->svc->create([
+        'doc_type' => 'PAYMENT_REQUEST', 'brand' => 'LW', 'id_outlet' => 120, 'title' => 'PR',
+        'lines' => [['description' => 'X', 'amount' => 50000]],
+    ], $hs);
+
+    expect($pr->payload_json['sisa'] ?? null)->toBeNull();
+});
+
 it('Refund: nevira_transaction_number REFERENSI + PII di payload, tanpa line items', function () {
     $hs = reqUser();
     $doc = $this->svc->create([

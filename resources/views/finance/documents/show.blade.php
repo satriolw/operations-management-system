@@ -41,6 +41,16 @@
     </div>
     @endif
 
+    @php $pl = $doc->payload_json ?? []; @endphp
+    @if ($doc->doc_type === 'EXPENSE_REPORT' && isset($pl['sisa']))
+        <div class="card"><h2>Rekonsiliasi CA</h2>
+            Jumlah CA: Rp{{ number_format((float) ($pl['ca_amount'] ?? 0), 0, ',', '.') }} ·
+            Total realisasi: Rp{{ number_format((float) $doc->amount, 0, ',', '.') }} ·
+            <b>Sisa: Rp{{ number_format((float) $pl['sisa'], 0, ',', '.') }} — {{ $pl['sisa_label'] }}</b>
+            ({{ ($pl['sisa'] ?? 0) < 0 ? 'reimburse ke karyawan' : 'kembali ke perusahaan' }})
+        </div>
+    @endif
+
     <div class="card"><h2>Jejak Approval (status tracking)</h2>
         <ul class="trail">
         @forelse ($doc->approvals->sortBy('level') as $a)
