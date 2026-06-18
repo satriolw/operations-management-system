@@ -12,6 +12,14 @@ return [
     // Promo resmi yang DIKECUALIKAN dari agregasi kebocoran (nama persis dari promos[].name).
     'promo_whitelist' => [],
 
+    // Pembayaran (OPS-1403): metode non-tunai (change_amount seharusnya 0 — PERLU KONFIRMASI QRIS/DEPOSIT)
+    // & metode yang wajib bukti (payment_proof). Semantik belum dikonfirmasi → review_mode.
+    'cashless_methods' => ['QRIS', 'DEPOSIT', 'TRANSFER', 'DEBIT', 'CREDIT', 'EDC'],
+    'proof_required_methods' => ['TRANSFER'],
+
+    // Off-price (OPS-1404): grup pelanggan B2B resmi yang DIKECUALIKAN (id_customer_group). PERLU KONFIRMASI.
+    'b2b_customer_groups' => [],
+
     // Default ambang outlet baru (transaction_audit_config OPS-1402..1406).
     'defaults' => [
         'promo_leak_pct' => 15.0,         // diskon > % omzet/hari → flag
