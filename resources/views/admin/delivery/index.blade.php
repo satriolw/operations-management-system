@@ -167,6 +167,96 @@
                 </div>
             </div>
 <div class="toast-wrap" id="toastWrap"></div>
+
+{{-- OPS-804 · Kelola master data: akun WhatsApp, target, investor --}}
+<style>
+    .mgmt{max-width:1000px;margin:18px auto 0;display:grid;gap:16px;}
+    .mgmt .card2{background:#fff;border:1px solid #E6E9EE;border-radius:12px;padding:16px;}
+    .mgmt h3{font-size:14px;font-weight:800;margin:0 0 10px;}
+    .mgmt table{width:100%;border-collapse:collapse;font-size:12.5px;}
+    .mgmt th,.mgmt td{padding:6px 8px;border-bottom:1px solid #EEF1F4;text-align:left;vertical-align:top;}
+    .mgmt input,.mgmt select{border:1px solid #D8DCE3;border-radius:7px;padding:5px 7px;font:inherit;font-size:12px;}
+    .mgmt .b{font:inherit;font-weight:650;font-size:12px;border-radius:7px;border:1px solid #2C6FE0;background:#2C6FE0;color:#fff;padding:5px 11px;cursor:pointer;}
+    .mgmt .b.del{background:#fff;color:#C0392B;border-color:#E5C4C0;}
+</style>
+<div class="mgmt">
+    @if (session('status'))<div class="flash" style="background:#E7FFDB;border:1px solid #BfeaA8;color:#1B5E20;border-radius:8px;padding:9px 11px;font-size:13px">{{ session('status') }}</div>@endif
+    @if ($errors->any())<div class="flash" style="background:#FBE9E6;border:1px solid #F2C9C2;color:#C0392B;border-radius:8px;padding:9px 11px;font-size:13px">{{ $errors->first() }}</div>@endif
+
+    {{-- Akun WhatsApp --}}
+    <div class="card2"><h3>Akun WhatsApp</h3>
+        <table><thead><tr><th>Label</th><th>Nomor</th><th>OBA</th><th>Status</th><th>Aktif</th><th></th></tr></thead><tbody>
+        @foreach ($accounts as $a)
+            <tr>
+                <form method="POST" action="{{ route('admin.whatsapp-accounts.update', $a) }}">@csrf @method('PUT')
+                <td><input name="label" value="{{ $a->label }}"></td>
+                <td><input name="phone_number" value="{{ $a->phone_number }}"></td>
+                <td><select name="oba_status">@foreach (['active','process','none'] as $s)<option @selected($a->oba_status===$s)>{{ $s }}</option>@endforeach</select></td>
+                <td><select name="account_status">@foreach (['active','lost','recovering'] as $s)<option @selected($a->account_status===$s)>{{ $s }}</option>@endforeach</select></td>
+                <td><input type="checkbox" name="active" value="1" @checked($a->active)></td>
+                <td><button class="b" type="submit">Simpan</button></form>
+                    <form method="POST" action="{{ route('admin.whatsapp-accounts.destroy', $a) }}" onsubmit="return confirm('Hapus akun?')" style="display:inline">@csrf @method('DELETE')<button class="b del">Hapus</button></form></td>
+            </tr>
+        @endforeach
+            <form method="POST" action="{{ route('admin.whatsapp-accounts.store') }}">@csrf<tr>
+                <td><input name="label" placeholder="Label" required></td>
+                <td><input name="phone_number" placeholder="62…" required></td>
+                <td><select name="oba_status">@foreach (['none','process','active'] as $s)<option>{{ $s }}</option>@endforeach</select></td>
+                <td><select name="account_status">@foreach (['active','lost','recovering'] as $s)<option>{{ $s }}</option>@endforeach</select></td>
+                <td><input type="checkbox" name="active" value="1" checked></td>
+                <td><button class="b" type="submit">Tambah</button></td>
+            </tr></form>
+        </tbody></table>
+    </div>
+
+    {{-- Investor (1:1 outlet) --}}
+    <div class="card2"><h3>Investor (1:1 outlet)</h3>
+        <table><thead><tr><th>Nama</th><th>Kontak WA</th><th>Outlet</th><th></th></tr></thead><tbody>
+        @foreach ($investors as $inv)
+            <tr>
+                <form method="POST" action="{{ route('admin.investors.update', $inv) }}">@csrf @method('PUT')
+                <td><input name="name" value="{{ $inv->name }}"></td>
+                <td><input name="wa_contact" value="{{ $inv->wa_contact }}"></td>
+                <td><input name="id_outlet" type="number" value="{{ $inv->id_outlet }}"></td>
+                <td><button class="b">Simpan</button></form>
+                    <form method="POST" action="{{ route('admin.investors.destroy', $inv) }}" onsubmit="return confirm('Hapus investor?')" style="display:inline">@csrf @method('DELETE')<button class="b del">Hapus</button></form></td>
+            </tr>
+        @endforeach
+            <form method="POST" action="{{ route('admin.investors.store') }}">@csrf<tr>
+                <td><input name="name" placeholder="Nama investor" required></td>
+                <td><input name="wa_contact" placeholder="62…"></td>
+                <td><select name="id_outlet">@foreach ($outlets as $o)<option value="{{ $o->id_outlet }}">{{ $o->name }}</option>@endforeach</select></td>
+                <td><button class="b">Tambah</button></td>
+            </tr></form>
+        </tbody></table>
+    </div>
+
+    {{-- Target pengiriman --}}
+    <div class="card2"><h3>Target Pengiriman</h3>
+        <table><thead><tr><th>Outlet</th><th>Investor label</th><th>Akun WA</th><th>group_id</th><th>Mode</th><th></th></tr></thead><tbody>
+        @foreach ($targets as $t)
+            <tr>
+                <form method="POST" action="{{ route('admin.delivery-targets.update', $t) }}">@csrf @method('PUT')
+                <td><input name="id_outlet" type="number" value="{{ $t->id_outlet }}" style="width:80px"></td>
+                <td><input name="investor_label" value="{{ $t->investor_label }}"></td>
+                <td><select name="whatsapp_account_id"><option value="">—</option>@foreach ($accounts as $a)<option value="{{ $a->id }}" @selected($t->whatsapp_account_id===$a->id)>{{ $a->label }}</option>@endforeach</select></td>
+                <td><input name="group_id" value="{{ $t->group_id }}"></td>
+                <td><select name="deliver_mode">@foreach (['hybrid','assisted','full_auto'] as $m)<option @selected($t->deliver_mode===$m)>{{ $m }}</option>@endforeach</select></td>
+                <td><button class="b">Simpan</button></form>
+                    <form method="POST" action="{{ route('admin.delivery-targets.destroy', $t) }}" onsubmit="return confirm('Hapus target?')" style="display:inline">@csrf @method('DELETE')<button class="b del">Hapus</button></form></td>
+            </tr>
+        @endforeach
+            <form method="POST" action="{{ route('admin.delivery-targets.store') }}">@csrf<tr>
+                <td><select name="id_outlet">@foreach ($outlets as $o)<option value="{{ $o->id_outlet }}">{{ $o->name }}</option>@endforeach</select></td>
+                <td><input name="investor_label" placeholder="Label"></td>
+                <td><select name="whatsapp_account_id"><option value="">—</option>@foreach ($accounts as $a)<option value="{{ $a->id }}">{{ $a->label }}</option>@endforeach</select></td>
+                <td><input name="group_id" placeholder="opsional"></td>
+                <td><select name="deliver_mode">@foreach (['hybrid','assisted','full_auto'] as $m)<option>{{ $m }}</option>@endforeach</select></td>
+                <td><button class="b">Tambah</button></td>
+            </tr></form>
+        </tbody></table>
+    </div>
+</div>
 @endsection
 
 @section('scripts')
