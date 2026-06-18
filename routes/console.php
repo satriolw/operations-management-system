@@ -57,3 +57,6 @@ Schedule::command('oms:build-leaderboard')->dailyAt('23:10')->timezone('Asia/Jak
 
 // Nota terlambat / macet (Epic M, OPS-1303) — tiap jam saat jam operasional.
 Schedule::command('oms:check-late-orders')->hourlyAt(15)->timezone('Asia/Jakarta');
+
+// Audit transaksi (Epic N, OPS-1402) — harian dini hari untuk hari sebelumnya (perlu ditinjau).
+Schedule::command('oms:audit-transactions')->dailyAt('02:00')->timezone('Asia/Jakarta');

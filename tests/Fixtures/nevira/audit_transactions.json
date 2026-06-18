@@ -1,0 +1,38 @@
+{
+  "current_page": 1,
+  "per_page": 50,
+  "last_page": 1,
+  "next_page_url": null,
+  "data": [
+    {
+      "transaction_number": "INV/120/2026/06/9701",
+      "id_outlet": 120,
+      "id_cashier": 181,
+      "grand_total": 200000,
+      "promos": [
+        { "name": "Gratis Biaya Antar Jemput", "amount": 31028 },
+        { "name": "DISKON 5% MEMBERSHIP", "amount": 5950 }
+      ],
+      "payments": [
+        { "payment_method": "QRIS", "amount": 274680, "change_amount": 87000, "payment_proof": null }
+      ],
+      "services": [
+        { "price": 10000, "quantity": 3, "actual_quantity": 1, "service_data": { "price": 14000 } }
+      ],
+      "customer": {
+        "id_customer": 5512, "id_customer_group": 2, "name": "Budi Santoso", "phone": "08123456789",
+        "deposit_balance": 34180, "deposit_active_until": "2026-09-16", "deposit_status": "ACTIVE"
+      }
+    },
+    {
+      "transaction_number": "INV/120/2026/06/9702",
+      "id_outlet": 120,
+      "id_cashier": 181,
+      "grand_total": 150000,
+      "promos": [{ "name": "PROMO BESAR", "amount": 500000 }],
+      "payments": [{ "payment_method": "CASH", "amount": 150000, "change_amount": 0 }],
+      "services": [{ "price": 14000, "quantity": 2, "actual_quantity": 2 }],
+      "customer": { "id_customer": 5513, "name": "Siti", "phone": "0822", "deposit_balance": 0 }
+    }
+  ]
+}
