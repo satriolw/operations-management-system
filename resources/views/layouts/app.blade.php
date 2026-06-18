@@ -21,6 +21,8 @@
     $nav = [
         'Operasional' => [
             ['Dashboard', 'dashboard', null],
+            ['Tinjauan Sinyal', 'signals.index', 'signals.review'],
+            ['Laporan & Kirim', 'reports.index', null],
         ],
         'Admin · Master Data' => [
             ['Outlet', 'admin.outlets.index', 'master_data.edit'],
