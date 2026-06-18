@@ -48,3 +48,6 @@ Schedule::command('oms:purge-checklist-photos')->monthlyOn(1, '03:45')->timezone
 // Checklist harian (M3-03): buat run pagi, evaluasi deadline (reminder + eskalasi) berkala.
 Schedule::command('oms:create-checklist-runs')->dailyAt('05:00')->timezone('Asia/Jakarta');
 Schedule::command('oms:checklist-deadlines')->hourlyAt(5)->timezone('Asia/Jakarta');
+
+// Skor kepatuhan checklist (M3-04) — akhir hari setelah jendela deadline.
+Schedule::command('oms:score-checklists')->dailyAt('22:30')->timezone('Asia/Jakarta');
