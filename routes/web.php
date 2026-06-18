@@ -2,6 +2,7 @@
 
 use App\Modules\Admin\Http\Controllers\ApprovalChainController;
 use App\Modules\Admin\Http\Controllers\CapacityController;
+use App\Modules\Admin\Http\Controllers\ChecklistTemplateController;
 use App\Modules\Admin\Http\Controllers\DeliveryConfigController;
 use App\Modules\Admin\Http\Controllers\OutletController;
 use App\Modules\Admin\Http\Controllers\RoleLevelController;
@@ -59,6 +60,14 @@ Route::middleware(['web', 'auth', 'can:'.Permissions::EDIT_MASTER_DATA])
         Route::post('role-levels', [RoleLevelController::class, 'store'])->name('role-levels.store');
         Route::put('role-levels/{roleLevel}', [RoleLevelController::class, 'update'])->name('role-levels.update');
         Route::delete('role-levels/{roleLevel}', [RoleLevelController::class, 'destroy'])->name('role-levels.destroy');
+
+        // M3-01 · Master template & item checklist (Modul 3 Discipline)
+        Route::get('checklists', [ChecklistTemplateController::class, 'index'])->name('checklists.index');
+        Route::post('checklists', [ChecklistTemplateController::class, 'store'])->name('checklists.store');
+        Route::put('checklists/{checklist}', [ChecklistTemplateController::class, 'update'])->name('checklists.update');
+        Route::delete('checklists/{checklist}', [ChecklistTemplateController::class, 'destroy'])->name('checklists.destroy');
+        Route::post('checklists/{checklist}/items', [ChecklistTemplateController::class, 'storeItem'])->name('checklists.items.store');
+        Route::delete('checklist-items/{item}', [ChecklistTemplateController::class, 'destroyItem'])->name('checklists.items.destroy');
 
         // M2-02 · Master data rantai approval dokumen keuangan (Modul 2 Finance)
         Route::get('approval-chains', [ApprovalChainController::class, 'index'])->name('approval-chains.index');
