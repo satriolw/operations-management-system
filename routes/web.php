@@ -14,8 +14,15 @@ use App\Modules\Identity\Permissions;
 use App\Modules\Signals\Http\Controllers\SignalReviewController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('welcome');
+// OPS-806 · pintu masuk: '/' → dashboard (bila auth) atau login.
+Route::get('/', fn () => redirect()->route(auth()->check() ? 'dashboard' : 'login'));
+
+// OPS-806 · Auth UI (Blade custom + guard/sesi Laravel; investor tidak login).
+Route::middleware('web')->group(function () {
+    Route::get('login', [\App\Modules\Identity\Http\Controllers\LoginController::class, 'show'])->middleware('guest')->name('login');
+    Route::post('login', [\App\Modules\Identity\Http\Controllers\LoginController::class, 'login'])->middleware('guest');
+    Route::post('logout', [\App\Modules\Identity\Http\Controllers\LoginController::class, 'logout'])->middleware('auth')->name('logout');
+    Route::get('dashboard', [\App\Modules\Identity\Http\Controllers\DashboardController::class, 'index'])->middleware('auth')->name('dashboard');
 });
 
 // OPS-302 · Head Store konfirmasi "Sudah saya kirim" (hybrid). Gate APPROVE_AND_SEND + scoping di controller.
@@ -51,7 +58,8 @@ Route::middleware(['web', 'auth'])->prefix('discipline')->name('discipline.')->g
 // Admin — master data. Gate aksi sensitif: master_data.edit (OPS-801).
 Route::middleware(['web', 'auth', 'can:'.Permissions::EDIT_MASTER_DATA])
     ->prefix('admin')->name('admin.')->group(function () {
-        // OPS-803 · Edit Outlet
+        // OPS-806 · daftar outlet (index) + OPS-803 · Edit Outlet
+        Route::get('outlets', [OutletController::class, 'index'])->name('outlets.index');
         Route::get('outlets/{outlet}/edit', [OutletController::class, 'edit'])->name('outlets.edit');
         Route::put('outlets/{outlet}', [OutletController::class, 'update'])->name('outlets.update');
 
