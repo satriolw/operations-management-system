@@ -9,10 +9,11 @@ use Illuminate\Database\Eloquent\Model;
  */
 class CashierInputScore extends Model
 {
-    protected $fillable = ['id_outlet', 'id_cashier', 'period', 'error_count', 'txn_count', 'rate'];
+    protected $fillable = ['id_outlet', 'id_cashier', 'period', 'error_count', 'txn_count', 'rate', 'qty_variance_count'];
 
     protected $casts = [
         'error_count' => 'integer',
         'txn_count' => 'integer',
+        'qty_variance_count' => 'integer', // OPS-1405 variance quantity (memperkuat KPI input)
     ];
 }

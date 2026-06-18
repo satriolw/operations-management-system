@@ -60,3 +60,6 @@ Schedule::command('oms:check-late-orders')->hourlyAt(15)->timezone('Asia/Jakarta
 
 // Audit transaksi (Epic N, OPS-1402) — harian dini hari untuk hari sebelumnya (perlu ditinjau).
 Schedule::command('oms:audit-transactions')->dailyAt('02:00')->timezone('Asia/Jakarta');
+
+// Variance quantity → KPI input (Epic N, OPS-1405) — harian, agregat bulan berjalan.
+Schedule::command('oms:score-qty-variance')->dailyAt('02:30')->timezone('Asia/Jakarta');
